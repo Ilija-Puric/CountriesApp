@@ -61,6 +61,7 @@ gap: 10px;
 p{
     font-size: 1.3rem;
     padding: 0px;
+    transition: opacity 0.3s ease-in;
     // color: var(--white);
 }
 button{
@@ -68,6 +69,9 @@ button{
     background-color: var(--white);
     border-radius: 30px;
     padding: 12px 15px;
+    position: relative;
+    // bottom: -10px;
+    bottom: -1vh;
 }
 }
 
@@ -83,12 +87,58 @@ button:hover{
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
+    max-width: 700px;
 }
 
 .moveToBottom{
     // position: absolute;
-    margin-top: 50vh;
+    margin-top: 55vh;
     text-align: center;
     width: 100%;
     transition: all 1s ease-in-out;
+}
+
+#randomCountry{
+    width: 100%;
+    height: 100%;
+    img{
+        width: 100%;
+        height: 50%;
+        object-fit: cover;
+        position: relative;
+        bottom: 30px;
+  
+    }
+    span{
+        font-weight: 100;
+    }
+    p{
+        font-weight: 800;
+    }
+}
+
+#randomCountryDetails{
+    width: 50%;
+    margin: 0 auto;
+    min-width: 250px;
+
+    p{
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
+        min-width: 250px;
+    }
+}
+
+
+@media screen and (min-width:700px) {
+    #randomCountry{
+        img{
+            object-fit: contain;
+        }
+    }
+
+    button{
+        bottom: 0.5vh !important;
+    }
 }
