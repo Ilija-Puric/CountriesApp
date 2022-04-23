@@ -1,3 +1,94 @@
-body{
-    background-color: red;
+@forward 'globals/_index';
+
+@mixin flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+// header{
+//     position: fixed;
+//     width: 100%;
+//     background-color: var(--white);
+//     height: 5vh;
+// }
+// header ul{
+//     @include flex;
+//     list-style: none;
+//     height: 100%;
+//     // font-size: 2rem;
+// }
+
+h1{
+    font-size: 2rem;
+    text-align: center;
+    padding-top: 30px;
+    color: var(--gray);
+    line-height: 2.4rem;
+    span{
+        color: var(--green);
+    }
+}
+
+main{
+    width: 100vw;
+    height: 100vh;
+    background: url('../images/jungle.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: rgb(65, 72, 77);
+    background-blend-mode: multiply;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+}
+
+#randomCountryContainer{
+background-color: rgb(49, 190, 80);
+width: 90vw;
+height: 50%;
+margin: 0 auto;
+// border-radius: 200px 0px 200px 0px;
+border-radius: 2000px 0px 0px 0px;
+text-align: center;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+gap: 10px;
+
+p{
+    font-size: 1.3rem;
+    padding: 0px;
+    // color: var(--white);
+}
+button{
+    border: 2px solid var(--white);
+    background-color: var(--white);
+    border-radius: 30px;
+    padding: 12px 15px;
+}
+}
+
+button:hover{
+    cursor: pointer;
+}
+
+.showCountry{
+    width: 80vw !important;
+    border-radius: 20px !important;
+    position: absolute;
+    transition: width 0.3s ease-in-out;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.moveToBottom{
+    // position: absolute;
+    margin-top: 50vh;
+    text-align: center;
+    width: 100%;
+    transition: all 1s ease-in-out;
 }
