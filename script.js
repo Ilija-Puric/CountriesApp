@@ -13,21 +13,49 @@ const styleClicked = document.createElement("style");
 })();
 
 const getCountries = async function () {
-  let countries = await new Promise((resolve, reject) => {
-    resolve(fetch("https://restcountries.com/v3.1/all"));
-    reject("Error man");
-  });
-  let data = await countries.json();
-  return data;
+  let countries = await fetch("https://restcountries.com/v3.1/all");
+  if (countries.status === 200) {
+    let data = await countries.json();
+    if (typeof Storage !== "undefined") {
+      for (const [index, country] of data.entries()) {
+        console.log(index, country.name.common);
+        sessionStorage.setItem(`${index}`, country.name.common);
+      }
+      return data;
+    }
+  } else {
+    return new Error(`Error loading resourse,status code:${countries.status}`);
+  }
 };
 
+if (sessionStorage.getItem(0) && sessionStorage.getItem(249)) {
+  console.log("Popunjena lokalna memorija");
+} else getCountries();
+
 const getBorderingCountry = async function (country) {
-  let countryInfo = await new Promise((resolve, reject) => {
-    resolve(fetch(`https://restcountries.com/v3.1/alpha/${country}`));
-    reject("Error man");
-  });
-  let data = await countryInfo.json();
-  return data;
+  let countryInfo = await fetch(
+    `https://restcountries.com/v3.1/alpha/${country}`
+  );
+  if (countryInfo.status === 200) {
+    let data = await countryInfo.json();
+    return data;
+  } else {
+    return new Error(
+      `Error loading resourse,status code:${countryInfo.status}`
+    );
+  }
+};
+
+const getSingleCountry = async function (name) {
+  let countryInfo = await fetch(`https://restcountries.com/v3.1/name/${name}`);
+  if (countryInfo.status === 200) {
+    let data = await countryInfo.json();
+    return data;
+  } else {
+    return new Error(
+      `Error loading resourse,status code:${countryInfo.status}`
+    );
+  }
 };
 
 btnRandomCountry.addEventListener("click", () => {
@@ -35,8 +63,6 @@ btnRandomCountry.addEventListener("click", () => {
     !randomCountryDiv.classList.contains("showCountry") ||
     !h1.classList.contains("moveToBottom")
   )
-    // setTimeout(() => {
-    // }, 2000);
     styleClicked.innerHTML = `
 
   #randomCountryContainer{
@@ -47,38 +73,38 @@ btnRandomCountry.addEventListener("click", () => {
   #randomCountryContainer button{
      position: absolute;
      bottom: -20px !important;
-}
+  }
 
-main{
-  align-items: center;
-justify-content: center;
-flex-direction: column;
-}
+  main{
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
 `;
-  console.log(document.getElementById(""));
+  // FUNKCIJA KOJA JEDNOMMMMM SAMO PRAVI HTTP ZAHTEV SERVERU,OSTATAK IZ MEMORIJE
+
   getRandomCountry();
   async function getRandomCountry() {
     //Sinhrona radnja.... mora pre async await
     if (pAdvertising.style.opacity !== "0") pAdvertising.style.opacity = "0";
+    animateLoadTime();
+    let randomCountry = await getSingleCountry(
+      sessionStorage.getItem(getRandomNum())
+    );
+    randomCountry = randomCountry[0];
 
-    let countries = await getCountries();
-    let randomCountry = countries[getRandomNum()];
     let countryName = randomCountry.name.common;
     let countryFlag = randomCountry.flags.svg;
-    let capital = randomCountry?.capital[0];
+    let capital = randomCountry?.capital[0] || "None";
     let continent = randomCountry.continents[0];
     let memberOfUN = randomCountry.unMember ? "YES" : "NO";
     let borderingCountries = randomCountry?.borders;
     let languages = randomCountry.languages;
     let currency =
       randomCountry.currencies[Object.keys(randomCountry.currencies)[0]];
-
-    let hasBordering = borderingCountries;
     if (borderingCountries) {
-      console.log("ima bordering");
       // Imam niz promisa koji zelim istovremeno da runnam
       let promises = [];
-      console.log(borderingCountries);
       borderingCountries.forEach((element) => {
         let promise = getBorderingCountry(element);
         promises.push(promise);
@@ -96,27 +122,22 @@ flex-direction: column;
           element[0].flags.svg,
         ]);
       });
-    } else {
-      console.log("no bordering");
     }
-    console.log(randomCountry);
 
     if (pAdvertising.nextElementSibling.tagName === "DIV") {
-      pAdvertising.nextElementSibling.innerHTML = getHTML(hasBordering, false);
+      pAdvertising.nextElementSibling.innerHTML = getHTML(
+        borderingCountries,
+        false
+      );
     } else {
       pAdvertising.style.display = "none";
-      pAdvertising.insertAdjacentHTML("afterend", getHTML(hasBordering));
+      pAdvertising.insertAdjacentHTML("afterend", getHTML(borderingCountries));
     }
 
     function getHTML(hasBordering, firstTime = true) {
       let htmlBordering = "";
       if (hasBordering) {
-        console.log(borderingCountriesValues);
-
-        console.log(borderingCountriesValues.length);
-
         //Moram razmisliti da li i ime gradova da dodam u DOM
-
         for (const [x, y] of borderingCountriesValues) {
           htmlBordering += `
           <div>
@@ -136,7 +157,7 @@ flex-direction: column;
             width: 100%;
             margin: 0 auto;
             min-width: 250px;
-            // border: 10px solid white;
+          /*border: 10px solid white;*/
           }
         .borderingCountries>div img{
               position: static !important;
@@ -189,22 +210,21 @@ flex-direction: column;
             ${htmlBordering}
         </div>`;
     }
+    animateCountries();
   }
-  animateCountryLoad();
 });
-function animateCountryLoad() {
+
+function animateLoadTime() {
   randomCountryDiv.classList.remove("showCountry");
   randomCountryDiv.classList.add("generateCountry");
-
   spinner.classList.remove("opacity0");
-
-  setTimeout(() => {
-    randomCountryDiv.classList.add("showCountry");
-    spinner.classList.add("opacity0");
-  }, 2000);
+}
+function animateCountries() {
   h1.classList.add("moveToBottom");
+  randomCountryDiv.classList.add("showCountry");
+  spinner.classList.add("opacity0");
 }
 
 function getRandomNum() {
-  return Math.floor(Math.random() * 250 + 0);
+  return Math.floor(Math.random() * 249 + 0);
 }
