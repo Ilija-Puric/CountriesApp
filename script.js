@@ -84,13 +84,14 @@ btnRandomCountry.addEventListener("click", () => {
     }
 
     function getHTML(hasBordering, firstTime = true) {
-      let htmlBordering = " ";
+      let htmlBordering = "";
       if (hasBordering) {
         console.log(borderingCountriesValues);
 
         console.log(borderingCountriesValues.length);
 
         //Moram razmisliti da li i ime gradova da dodam u DOM
+
         for (const [x, y] of borderingCountriesValues) {
           htmlBordering += `
           <div>
@@ -111,10 +112,16 @@ btnRandomCountry.addEventListener("click", () => {
         .borderingCountries>div img{
               position: static !important;
                     object-fit: cover;
-                    height:11.6vh !important;
+                    height:16.2vh !important;
         }
         .showCountry{
             // max-width: calc();
+        }
+        .borderingCountries>div:first-child>img{
+          border-radius:0px 0px 0px 20px;
+        }
+        .borderingCountries>div:last-child>img{
+          border-radius:0px 0px 20px 0px;
         }
         `;
       }
