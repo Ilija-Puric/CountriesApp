@@ -3,7 +3,14 @@ const btnRandomCountry = randomCountryDiv.children[1];
 const pAdvertising = randomCountryDiv.children[0];
 const h1 = document.getElementsByTagName("h1")[0];
 
+// const spinner = document.getElementById("spinner");
+
 const style = document.createElement("style");
+const styleClicked = document.createElement("style");
+(() => {
+  styleClicked.id = "onlyClicked";
+  document.head.append(styleClicked);
+})();
 
 const getCountries = async function () {
   let countries = await new Promise((resolve, reject) => {
@@ -28,10 +35,28 @@ btnRandomCountry.addEventListener("click", () => {
     !randomCountryDiv.classList.contains("showCountry") ||
     !h1.classList.contains("moveToBottom")
   )
-    animateCountryLoad();
+    // setTimeout(() => {
+    // }, 2000);
+    styleClicked.innerHTML = `
 
+  #randomCountryContainer{
+    position: absolute;
+    background-color:transparent !important;
+    transition:background-color 0.6s ease-in;
+  }
+  #randomCountryContainer button{
+     position: absolute;
+     bottom: -20px !important;
+}
+
+main{
+  align-items: center;
+justify-content: center;
+flex-direction: column;
+}
+`;
+  console.log(document.getElementById(""));
   getRandomCountry();
-
   async function getRandomCountry() {
     //Sinhrona radnja.... mora pre async await
     if (pAdvertising.style.opacity !== "0") pAdvertising.style.opacity = "0";
@@ -103,51 +128,37 @@ btnRandomCountry.addEventListener("click", () => {
         document.head.append(style);
         style.innerHTML = `
         .borderingCountries{
-            display: grid;
+            display: grid !important;
             width: 100%;
             grid-template-columns: repeat(auto-fit,minmax(${
               100 / borderingCountriesValues.length
             }%,1fr));
-        }
+            width: 100%;
+            margin: 0 auto;
+            min-width: 250px;
+            // border: 10px solid white;
+          }
         .borderingCountries>div img{
               position: static !important;
                     object-fit: cover;
-                    height:16.2vh !important;
+                   // height:16.2vh !important;
+                   //height: 100% !important;
+                   height: 16vh !important
         }
-        .showCountry{
-            // max-width: calc();
-        }
-        .borderingCountries>div:first-child>img{
-          border-radius:0px 0px 0px 20px;
-        }
-        .borderingCountries>div:last-child>img{
-          border-radius:0px 0px 20px 0px;
-        }
+
+        // .borderingCountries>div:first-child>img{
+        //   border-radius:0px 0px 0px 20px;
+        // }
+        // .borderingCountries>div:last-child>img{
+        //   border-radius:0px 0px 20px 0px;
+        // }
         `;
       }
 
       if (firstTime)
         return `<div id="randomCountry">
-    <img src="${countryFlag}" alt="no flag found" class="flag">
-    <div id="randomCountryDetails">
-        <p class="countryName">Name: <span>${countryName}</span></p>
-        <p class="countryContinent">Continent: <span>${continent}</span></p>
-        <p class="capital">Capital: <span>${capital}</span></p>
-        <p class="unMember">In UN?: <span>${memberOfUN}</span></p>
-        <div class="currencies">
-          <p>Currency: <span>${currency.name}(${currency.symbol})</span></p>
-        </div>
-        <div class="languages">
-        </div>
-        <div class="borderingCountries">
-        ${htmlBordering}
-        </div>
-    </div>
-    </div>`;
-      else
-        return `
-      <img src="${countryFlag}" alt="no flag found" class="flag">
-      <div id="randomCountryDetails">
+        <img src="${countryFlag}" alt="no flag found" class="flag">
+        <div class="middle">
           <p class="countryName">Name: <span>${countryName}</span></p>
           <p class="countryContinent">Continent: <span>${continent}</span></p>
           <p class="capital">Capital: <span>${capital}</span></p>
@@ -155,17 +166,42 @@ btnRandomCountry.addEventListener("click", () => {
           <div class="currencies">
             <p>Currency: <span>${currency.name}(${currency.symbol})</span></p>
           </div>
-          <div class="languages">
-          </div>
-          <div class="borderingCountries">
-          ${htmlBordering}
-          </div>
-      </div>`;
+        </div>
+        <div class="languages">
+        </div>
+        <div class="borderingCountries" style="display:none">
+            ${htmlBordering}
+        </div>
+        </div>`;
+      else
+        return `
+        <img src="${countryFlag}" alt="no flag found" class="flag">
+        <div class="middle">
+        <p class="countryName">Name: <span>${countryName}</span></p>
+        <p class="countryContinent">Continent: <span>${continent}</span></p>
+        <p class="capital">Capital: <span>${capital}</span></p>
+        <p class="unMember">In UN?: <span>${memberOfUN}</span></p>
+        <div class="currencies">
+          <p>Currency: <span>${currency.name}(${currency.symbol})</span></p>
+        </div>
+        </div>
+        <div class="borderingCountries" style="display:none">
+            ${htmlBordering}
+        </div>`;
     }
   }
+  animateCountryLoad();
 });
 function animateCountryLoad() {
-  randomCountryDiv.classList.add("showCountry");
+  randomCountryDiv.classList.remove("showCountry");
+  randomCountryDiv.classList.add("generateCountry");
+
+  spinner.classList.remove("opacity0");
+
+  setTimeout(() => {
+    randomCountryDiv.classList.add("showCountry");
+    spinner.classList.add("opacity0");
+  }, 2000);
   h1.classList.add("moveToBottom");
 }
 

@@ -7,6 +7,20 @@
     gap: 30px;
 }
 
+body{
+    background: url("../images/jungle.jpg");
+    background-color: rgba(0, 0, 0, 0);
+    background-position-y: 0%;
+    background-repeat: repeat;
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #41484d;
+    background-blend-mode: multiply;
+    background-size: cover;
+    background-position-x: 0%;
+}
+
 header{
     position: fixed;
     width: 100%;
@@ -22,6 +36,7 @@ header ul{
     height: 100%;
     // font-size: 2rem;
 }
+
 
 #hamburger{
     margin-top: 5px;
@@ -51,19 +66,14 @@ h1{
 
 main{
     width: 100vw;
-    height: 100vh;
-    background: url('../images/jungle.jpg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: rgb(65, 72, 77);
-    background-blend-mode: multiply;
-    background-size: cover;
+    height: 100%;
     display: flex;
     align-items: center;
 }
 
+
 #randomCountryContainer{
-background-color: rgb(49, 190, 80);
+background-color: var(--lightGreen);
 width: 90vw;
 height: 64%;
 margin: 0 auto;
@@ -87,9 +97,6 @@ button{
     background-color: var(--white);
     border-radius: 30px;
     padding: 12px 15px;
-    position: relative;
-    // bottom: -10px;
-    bottom: -1vh;
 }
 }
 
@@ -97,7 +104,7 @@ button:hover{
     cursor: pointer;
 }
 
-.showCountry{
+.generateCountry{
     width: 80vw !important;
     border-radius: 20px !important;
     position: absolute;
@@ -106,6 +113,11 @@ button:hover{
     left: 50%;
     transform: translate(-50%,-50%);
     max-width: 700px;
+    opacity: 0;
+}
+.showCountry{
+    opacity: 1 !important;
+    transition: 0.3s opacity ease-in !important;
 }
 
 .moveToBottom{
@@ -118,9 +130,18 @@ button:hover{
 #randomCountry{
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    >img{
+        min-height: 280px !important;
+        
+    }
     img{
         width: 100%;
         height: 50%;
+        height: 100%;
         object-fit: cover;
     }
     span{
@@ -131,24 +152,49 @@ button:hover{
     }
 }
 
-#randomCountryDetails{
+.middle{
+    background-color: var(--lightGreen);
     width: 100%;
-    margin: 0 auto;
-    min-width: 250px;
-
-    p{
-        text-align: center;
-        width: 100%;
-        margin: 0 auto;
-        min-width: 250px;
-    }
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
 }
 
 
 
+#spinner{
+    width: 50px;
+    height: 50px;
+    border: 5px dotted var(--green);
+    margin: 0 auto;
+    border-radius: 50%;
+    // opacity: 0;
+    animation-name: rotateSpinner;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+
+    position: absolute;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.opacity0{
+    opacity: 0 !important;
+}
+.hidden{
+    display: none;
+}
+@keyframes rotateSpinner{
+    from{
+        transform: rotate(0deg);
+    }
+    to{
+        transform: rotate(720deg);
+    }
+}
+
 @media screen and (min-width:700px) {
-
-
     button{
         bottom: 0.5vh !important;
     }
