@@ -91,7 +91,6 @@ button:hover{
 }
 
 .moveToBottom{
-    // position: absolute;
     margin-top: 55vh;
     text-align: center;
     width: 100%;
@@ -105,9 +104,6 @@ button:hover{
         width: 100%;
         height: 50%;
         object-fit: cover;
-        position: relative;
-        bottom: 30px;
-  
     }
     span{
         font-weight: 100;
@@ -118,7 +114,7 @@ button:hover{
 }
 
 #randomCountryDetails{
-    width: 50%;
+    width: 100%;
     margin: 0 auto;
     min-width: 250px;
 
@@ -131,12 +127,9 @@ button:hover{
 }
 
 
+
 @media screen and (min-width:700px) {
-    #randomCountry{
-        img{
-            object-fit: contain;
-        }
-    }
+
 
     button{
         bottom: 0.5vh !important;
