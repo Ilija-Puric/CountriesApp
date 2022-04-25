@@ -3,7 +3,7 @@ const btnRandomCountry = randomCountryDiv.children[1];
 const pAdvertising = randomCountryDiv.children[0];
 const h1 = document.getElementsByTagName("h1")[0];
 
-// const spinner = document.getElementById("spinner");
+const spinner = document.getElementById("spinner");
 
 const style = document.createElement("style");
 const styleClicked = document.createElement("style");
@@ -59,49 +59,28 @@ const getSingleCountry = async function (name) {
 };
 
 btnRandomCountry.addEventListener("click", () => {
-  if (
-    !randomCountryDiv.classList.contains("showCountry") ||
-    !h1.classList.contains("moveToBottom")
-  )
-    styleClicked.innerHTML = `
-
-  #randomCountryContainer{
-    position: absolute;
-    background-color:transparent !important;
-    transition:background-color 0.6s ease-in;
-  }
-  #randomCountryContainer button{
-     position: absolute;
-     bottom: -20px !important;
-  }
-
-  main{
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-`;
   // FUNKCIJA KOJA JEDNOMMMMM SAMO PRAVI HTTP ZAHTEV SERVERU,OSTATAK IZ MEMORIJE
-
+  //Sinhrona radnja....
+  animateLoadTime();
   getRandomCountry();
+
   async function getRandomCountry() {
-    //Sinhrona radnja.... mora pre async await
-    if (pAdvertising.style.opacity !== "0") pAdvertising.style.opacity = "0";
-    animateLoadTime();
-    let randomCountry = await getSingleCountry(
+    let randomCnt = await getSingleCountry(
       sessionStorage.getItem(getRandomNum())
     );
-    randomCountry = randomCountry[0];
+
+    let randomCountry = randomCnt[0];
 
     let countryName = randomCountry.name.common;
     let countryFlag = randomCountry.flags.svg;
-    let capital = randomCountry?.capital[0] || "None";
+    let capital = randomCountry?.capital || "None";
     let continent = randomCountry.continents[0];
     let memberOfUN = randomCountry.unMember ? "YES" : "NO";
     let borderingCountries = randomCountry?.borders;
     let languages = randomCountry.languages;
-    let currency =
-      randomCountry.currencies[Object.keys(randomCountry.currencies)[0]];
+    let currency = randomCountry.currencies
+      ? Object.values(randomCountry.currencies)[0]
+      : "NONE";
     if (borderingCountries) {
       // Imam niz promisa koji zelim istovremeno da runnam
       let promises = [];
@@ -124,17 +103,9 @@ btnRandomCountry.addEventListener("click", () => {
       });
     }
 
-    if (pAdvertising.nextElementSibling.tagName === "DIV") {
-      pAdvertising.nextElementSibling.innerHTML = getHTML(
-        borderingCountries,
-        false
-      );
-    } else {
-      pAdvertising.style.display = "none";
-      pAdvertising.insertAdjacentHTML("afterend", getHTML(borderingCountries));
-    }
+    getHTML(borderingCountries);
 
-    function getHTML(hasBordering, firstTime = true) {
+    function getHTML(hasBordering) {
       let htmlBordering = "";
       if (hasBordering) {
         //Moram razmisliti da li i ime gradova da dodam u DOM
@@ -157,7 +128,6 @@ btnRandomCountry.addEventListener("click", () => {
             width: 100%;
             margin: 0 auto;
             min-width: 250px;
-          /*border: 10px solid white;*/
           }
         .borderingCountries>div img{
               position: static !important;
@@ -166,18 +136,14 @@ btnRandomCountry.addEventListener("click", () => {
                    //height: 100% !important;
                    height: 16vh !important
         }
-
-        // .borderingCountries>div:first-child>img{
-        //   border-radius:0px 0px 0px 20px;
-        // }
-        // .borderingCountries>div:last-child>img{
-        //   border-radius:0px 0px 20px 0px;
-        // }
         `;
       }
 
-      if (firstTime)
-        return `<div id="randomCountry">
+      if (pAdvertising.nextElementSibling.tagName !== "DIV") {
+        pAdvertising.style.display = "none";
+        pAdvertising.insertAdjacentHTML(
+          "afterend",
+          `<div id="randomCountry">
         <img src="${countryFlag}" alt="no flag found" class="flag">
         <div class="middle">
           <p class="countryName">Name: <span>${countryName}</span></p>
@@ -193,9 +159,10 @@ btnRandomCountry.addEventListener("click", () => {
         <div class="borderingCountries" style="display:none">
             ${htmlBordering}
         </div>
-        </div>`;
-      else
-        return `
+        </div>`
+        );
+      } else {
+        pAdvertising.nextElementSibling.innerHTML = `
         <img src="${countryFlag}" alt="no flag found" class="flag">
         <div class="middle">
         <p class="countryName">Name: <span>${countryName}</span></p>
@@ -209,12 +176,39 @@ btnRandomCountry.addEventListener("click", () => {
         <div class="borderingCountries" style="display:none">
             ${htmlBordering}
         </div>`;
+      }
     }
     animateCountries();
   }
 });
 
+function changeLayout() {
+  if (
+    !randomCountryDiv.classList.contains("showCountry") ||
+    !h1.classList.contains("moveToBottom")
+  )
+    styleClicked.innerHTML = `
+
+#randomCountryContainer{
+  position: absolute;
+  background-color:transparent !important;
+  transition:background-color 0.6s ease-in;
+}
+#randomCountryContainer button{
+   position: absolute;
+   bottom: -20px !important;
+}
+main{
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+`;
+}
+
 function animateLoadTime() {
+  changeLayout();
+  if (pAdvertising.style.opacity !== "0") pAdvertising.style.opacity = "0";
   randomCountryDiv.classList.remove("showCountry");
   randomCountryDiv.classList.add("generateCountry");
   spinner.classList.remove("opacity0");
@@ -224,7 +218,6 @@ function animateCountries() {
   randomCountryDiv.classList.add("showCountry");
   spinner.classList.add("opacity0");
 }
-
 function getRandomNum() {
   return Math.floor(Math.random() * 249 + 0);
 }
