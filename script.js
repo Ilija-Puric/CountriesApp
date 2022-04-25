@@ -82,7 +82,7 @@ btnRandomCountry.addEventListener("click", () => {
       ? Object.values(randomCountry.currencies)[0]
       : "NONE";
 
-    let borderingCountriesValues = [];
+    let borderCntsMap = new Map();
     if (borderingCountries) {
       // Imam niz promisa koji zelim istovremeno da runnam
       let promises = [];
@@ -96,12 +96,8 @@ btnRandomCountry.addEventListener("click", () => {
         console.log("PRE", allBorderingCountries);
 
         allBorderingCountries.forEach((element) => {
-          borderingCountriesValues.push([
-            element[0].name.common,
-            element[0].flags.svg,
-          ]);
+          borderCntsMap.set(element[0].name.common, element[0].flags.svg);
         });
-        console.log(borderingCountriesValues);
       } catch (err) {
         console.log(err);
       }
@@ -113,11 +109,11 @@ btnRandomCountry.addEventListener("click", () => {
       let htmlBordering = "";
       if (hasBordering) {
         //Moram razmisliti da li i ime gradova da dodam u DOM
-        for (const [x, y] of borderingCountriesValues) {
+        for (const [name, img] of borderCntsMap) {
           htmlBordering += `
           <div>
-            <img src='${y}' alt="no picture of bordering country"/>
-            <!--<p>${x}</p>-->
+            <img src='${img}' alt="no picture of bordering country"/>
+            <!--<p>${name}</p>-->
           </div>
           `;
         }
@@ -127,7 +123,7 @@ btnRandomCountry.addEventListener("click", () => {
             display: grid !important;
             width: 100%;
             grid-template-columns: repeat(auto-fit,minmax(${
-              100 / borderingCountriesValues.length
+              100 / borderCntsMap.size
             }%,1fr));
             width: 100%;
             margin: 0 auto;
