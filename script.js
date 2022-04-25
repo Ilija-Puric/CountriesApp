@@ -81,6 +81,8 @@ btnRandomCountry.addEventListener("click", () => {
     let currency = randomCountry.currencies
       ? Object.values(randomCountry.currencies)[0]
       : "NONE";
+
+    let borderingCountriesValues = [];
     if (borderingCountries) {
       // Imam niz promisa koji zelim istovremeno da runnam
       let promises = [];
@@ -89,18 +91,20 @@ btnRandomCountry.addEventListener("click", () => {
         promises.push(promise);
       });
 
-      let allBorderingCountries = await Promise.all(promises)
-        .then((req) => req)
-        .catch((err) => console.log(err));
+      try {
+        let allBorderingCountries = await Promise.all(promises);
+        console.log("PRE", allBorderingCountries);
 
-      //da mogu kasnije da pristupim...
-      var borderingCountriesValues = [];
-      allBorderingCountries.forEach((element) => {
-        borderingCountriesValues.push([
-          element[0].name.common,
-          element[0].flags.svg,
-        ]);
-      });
+        allBorderingCountries.forEach((element) => {
+          borderingCountriesValues.push([
+            element[0].name.common,
+            element[0].flags.svg,
+          ]);
+        });
+        console.log(borderingCountriesValues);
+      } catch (err) {
+        console.log(err);
+      }
     }
 
     getHTML(borderingCountries);
