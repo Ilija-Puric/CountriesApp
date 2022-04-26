@@ -1,7 +1,10 @@
-const randomCountryDiv = document.getElementById("randomCountryContainer");
-const btnRandomCountry = randomCountryDiv.children[1];
-const pAdvertising = randomCountryDiv.children[0];
+const randomCountryDivContainer = document.getElementById(
+  "randomCountryContainer"
+);
+const btnRandomCountry = randomCountryDivContainer.children[2];
+const pAdvertising = randomCountryDivContainer.children[0];
 const h1 = document.getElementsByTagName("h1")[0];
+const randomCountryDiv = document.getElementById("randomCountry");
 
 const spinner = document.getElementById("spinner");
 
@@ -19,7 +22,9 @@ const getCountries = async function () {
     if (typeof Storage !== "undefined") {
       for (const [index, country] of data.entries()) {
         console.log(index, country.name.common);
-        sessionStorage.setItem(`${index}`, country.name.common);
+        // sessionStorage.setItem(`${index}`, country.name.common);
+        //Izmena sa json
+        localStorage.setItem(`${index}`, JSON.stringify(country));
       }
       return data;
     }
@@ -28,48 +33,38 @@ const getCountries = async function () {
   }
 };
 
-if (sessionStorage.getItem(0) && sessionStorage.getItem(249)) {
-  console.log("Popunjena lokalna memorija");
+const allCountries = [];
+if (localStorage.getItem(0) && localStorage.getItem(249)) {
+  console.log("Local storage filled");
+  //Punjenje allCountries
+  let i = 0;
+  while (i < 250) {
+    allCountries.push(JSON.parse(localStorage.getItem(i)));
+    i++;
+  }
 } else getCountries();
 
-const getBorderingCountry = async function (country) {
-  let countryInfo = await fetch(
-    `https://restcountries.com/v3.1/alpha/${country}`
-  );
-  if (countryInfo.status === 200) {
-    let data = await countryInfo.json();
-    return data;
-  } else {
-    return new Error(
-      `Error loading resourse,status code:${countryInfo.status}`
-    );
-  }
-};
-
-const getSingleCountry = async function (name) {
-  let countryInfo = await fetch(`https://restcountries.com/v3.1/name/${name}`);
-  if (countryInfo.status === 200) {
-    let data = await countryInfo.json();
-    return data;
-  } else {
-    return new Error(
-      `Error loading resourse,status code:${countryInfo.status}`
-    );
-  }
-};
-
 btnRandomCountry.addEventListener("click", () => {
-  // FUNKCIJA KOJA JEDNOMMMMM SAMO PRAVI HTTP ZAHTEV SERVERU,OSTATAK IZ MEMORIJE
   //Sinhrona radnja....
   animateLoadTime();
   getRandomCountry();
+  waitForImagesToLoad();
 
-  async function getRandomCountry() {
-    let randomCnt = await getSingleCountry(
-      sessionStorage.getItem(getRandomNum())
-    );
+  function waitForImagesToLoad() {
+    const images = document.getElementsByTagName("img");
+    let loaded = [];
+    [...images].forEach((image) => {
+      image.addEventListener("load", (event) => {
+        loaded.push(image);
+        if (loaded.length === images.length) {
+          animateCountries();
+        }
+      });
+    });
+  }
 
-    let randomCountry = randomCnt[0];
+  function getRandomCountry() {
+    let randomCountry = JSON.parse(localStorage.getItem(getRandomNum()));
 
     let countryName = randomCountry.name.common;
     let countryFlag = randomCountry.flags.svg;
@@ -82,38 +77,26 @@ btnRandomCountry.addEventListener("click", () => {
       ? Object.values(randomCountry.currencies)[0]
       : "NONE";
 
-    let borderCntsMap = new Map();
+    let allBorderingCountries;
     if (borderingCountries) {
-      // Imam niz promisa koji zelim istovremeno da runnam
-      let promises = [];
-      borderingCountries.forEach((element) => {
-        let promise = getBorderingCountry(element);
-        promises.push(promise);
+      allBorderingCountries = allCountries.filter((country) => {
+        for (let i = 0; i < borderingCountries.length; i++) {
+          let border = borderingCountries[i];
+          if (country.cca3 === border) return country;
+        }
       });
-
-      try {
-        let allBorderingCountries = await Promise.all(promises);
-        console.log("PRE", allBorderingCountries);
-
-        allBorderingCountries.forEach((element) => {
-          borderCntsMap.set(element[0].name.common, element[0].flags.svg);
-        });
-      } catch (err) {
-        console.log(err);
-      }
     }
 
-    getHTML(borderingCountries);
+    getHTML(allBorderingCountries);
 
-    function getHTML(hasBordering) {
+    function getHTML(allBorderingCountries) {
       let htmlBordering = "";
-      if (hasBordering) {
-        //Moram razmisliti da li i ime gradova da dodam u DOM
-        for (const [name, img] of borderCntsMap) {
+      if (allBorderingCountries) {
+        for (const country of allBorderingCountries) {
           htmlBordering += `
           <div>
-            <img src='${img}' alt="no picture of bordering country"/>
-            <!--<p>${name}</p>-->
+            <img src='${country.flags.svg}' alt="no picture of bordering country"/>
+            <!--<p>${country.name.common}</p>-->
           </div>
           `;
         }
@@ -123,7 +106,7 @@ btnRandomCountry.addEventListener("click", () => {
             display: grid !important;
             width: 100%;
             grid-template-columns: repeat(auto-fit,minmax(${
-              100 / borderCntsMap.size
+              100 / allBorderingCountries.length
             }%,1fr));
             width: 100%;
             margin: 0 auto;
@@ -139,30 +122,8 @@ btnRandomCountry.addEventListener("click", () => {
         `;
       }
 
-      if (pAdvertising.nextElementSibling.tagName !== "DIV") {
-        pAdvertising.style.display = "none";
-        pAdvertising.insertAdjacentHTML(
-          "afterend",
-          `<div id="randomCountry">
-        <img src="${countryFlag}" alt="no flag found" class="flag">
-        <div class="middle">
-          <p class="countryName">Name: <span>${countryName}</span></p>
-          <p class="countryContinent">Continent: <span>${continent}</span></p>
-          <p class="capital">Capital: <span>${capital}</span></p>
-          <p class="unMember">In UN?: <span>${memberOfUN}</span></p>
-          <div class="currencies">
-            <p>Currency: <span>${currency.name}(${currency.symbol})</span></p>
-          </div>
-        </div>
-        <div class="languages">
-        </div>
-        <div class="borderingCountries" style="display:none">
-            ${htmlBordering}
-        </div>
-        </div>`
-        );
-      } else {
-        pAdvertising.nextElementSibling.innerHTML = `
+      randomCountryDiv.classList.remove("hidden");
+      randomCountryDiv.innerHTML = `
         <img src="${countryFlag}" alt="no flag found" class="flag">
         <div class="middle">
         <p class="countryName">Name: <span>${countryName}</span></p>
@@ -176,46 +137,42 @@ btnRandomCountry.addEventListener("click", () => {
         <div class="borderingCountries" style="display:none">
             ${htmlBordering}
         </div>`;
-      }
     }
-    animateCountries();
   }
 });
 
 function changeLayout() {
   if (
-    !randomCountryDiv.classList.contains("showCountry") ||
+    !randomCountryDivContainer.classList.contains("showCountry") ||
     !h1.classList.contains("moveToBottom")
   )
     styleClicked.innerHTML = `
-
-#randomCountryContainer{
-  position: absolute;
-  background-color:transparent !important;
-  transition:background-color 0.6s ease-in;
+      #randomCountryContainer{
+        position: absolute;
+        background-color:transparent !important;
+        transition:background-color 0.6s ease-in;
+      }
+      #randomCountryContainer button{
+        position: absolute;
+        bottom: -20px !important;
+      }
+      main{
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+      `;
 }
-#randomCountryContainer button{
-   position: absolute;
-   bottom: -20px !important;
-}
-main{
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-`;
-}
-
 function animateLoadTime() {
   changeLayout();
   if (pAdvertising.style.opacity !== "0") pAdvertising.style.opacity = "0";
-  randomCountryDiv.classList.remove("showCountry");
-  randomCountryDiv.classList.add("generateCountry");
+  randomCountryDivContainer.classList.remove("showCountry");
+  randomCountryDivContainer.classList.add("generateCountry");
   spinner.classList.remove("opacity0");
 }
 function animateCountries() {
   h1.classList.add("moveToBottom");
-  randomCountryDiv.classList.add("showCountry");
+  randomCountryDivContainer.classList.add("showCountry");
   spinner.classList.add("opacity0");
 }
 function getRandomNum() {
