@@ -6,7 +6,7 @@ const pAdvertising = randomCountryDivContainer.children[0];
 const h1 = document.getElementsByTagName("h1")[0];
 const randomCountryDiv = document.getElementById("randomCountry");
 
-const spinner = document.getElementById("spinner");
+const logoSpinner = document.getElementById("logoSpinner");
 
 const style = document.createElement("style");
 const styleClicked = document.createElement("style");
@@ -22,7 +22,6 @@ const getCountries = async function () {
     if (typeof Storage !== "undefined") {
       for (const [index, country] of data.entries()) {
         console.log(index, country.name.common);
-        // sessionStorage.setItem(`${index}`, country.name.common);
         //Izmena sa json
         localStorage.setItem(`${index}`, JSON.stringify(country));
       }
@@ -45,18 +44,21 @@ if (localStorage.getItem(0) && localStorage.getItem(249)) {
 } else getCountries();
 
 btnRandomCountry.addEventListener("click", () => {
-  //Sinhrona radnja....
   animateLoadTime();
   getRandomCountry();
   waitForImagesToLoad();
 
   function waitForImagesToLoad() {
-    const images = document.getElementsByTagName("img");
+    console.log("images");
+    const images = document.querySelectorAll("#randomCountryContainer img");
+    console.log(images);
     let loaded = [];
     [...images].forEach((image) => {
-      image.addEventListener("load", (event) => {
+      image.addEventListener("load", () => {
         loaded.push(image);
+        console.log("image");
         if (loaded.length === images.length) {
+          console.log("done loading");
           animateCountries();
         }
       });
@@ -138,6 +140,7 @@ btnRandomCountry.addEventListener("click", () => {
             ${htmlBordering}
         </div>`;
     }
+    console.log("done random");
   }
 });
 
@@ -153,8 +156,8 @@ function changeLayout() {
         transition:background-color 0.6s ease-in;
       }
       #randomCountryContainer button{
-        position: absolute;
-        bottom: -20px !important;
+        position: relative;
+        bottom: 35px !important;
       }
       main{
         align-items: center;
@@ -168,12 +171,14 @@ function animateLoadTime() {
   if (pAdvertising.style.opacity !== "0") pAdvertising.style.opacity = "0";
   randomCountryDivContainer.classList.remove("showCountry");
   randomCountryDivContainer.classList.add("generateCountry");
-  spinner.classList.remove("opacity0");
+  logoSpinner.classList.remove("opacity0");
+  console.log("load");
 }
 function animateCountries() {
   h1.classList.add("moveToBottom");
   randomCountryDivContainer.classList.add("showCountry");
-  spinner.classList.add("opacity0");
+  logoSpinner.classList.add("opacity0");
+  console.log("load done");
 }
 function getRandomNum() {
   return Math.floor(Math.random() * 249 + 0);
