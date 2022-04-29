@@ -35,7 +35,6 @@ const getCountries = async function () {
         }
       }
       for (const [index, country] of data.entries()) {
-        //Privremeno resenje za sporo ucitavanje...
         const countryObj = new Country(
           country.name.common,
           country?.capital ? country.capital[0] : "NONE",
@@ -64,15 +63,8 @@ const getCountries = async function () {
   }
 };
 
-const allCountries = [];
 if (localStorage.getItem(0) && localStorage.getItem(249)) {
   console.log("Local storage filled");
-  //Punjenje allCountries
-  let i = 0;
-  while (i < 250) {
-    allCountries.push(JSON.parse(localStorage.getItem(i)));
-    i++;
-  }
   document.getElementById("buttonAllCountries").disabled = false;
   document.getElementById("buttonRandomCountry").disabled = false;
   document.getElementById("buttonTrivia").disabled = false;
