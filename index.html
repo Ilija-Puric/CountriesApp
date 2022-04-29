@@ -6,24 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style/style.css">
-    <link rel="icon" href="images/navigate-circle.svg">
+    <link rel="icon" href="images/logoGeo.svg">
     <title>CountriesApp</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300&display=swap" rel="stylesheet">
+
+    <script async src="script/getCountries.js"></script>
 </head>
 
 <body>
     <img id="logo" class="" src="images/logoGeo.svg" alt="logo">
     <main>
-        <div id="containerTabbed">
-            <button>Random Country</button>
-            <button>All countries</button>
-            <button>Trivia</button>
-        </div>
         <div id="intro">
-
-            <p>This project was made as a student project for the faculty course "Web Proggraming".
+            <p>This project was made as a student project for the faculty course "Web programming".
                 To get started, click one of the upper buttons to switch views.
                 <br>
                 <small>Thanks for viewing my project, and hope you enjoy it!</small>
@@ -38,19 +34,24 @@
                     <li><img src="images/logo-github.svg" alt="npm picture"></li>
                 </ul>
             </div>
+
+            <p style="position: relative; top: 25px;">Select one of the categories below</p>
+            <div id="containerTabbed">
+                <button id="buttonAllCountries">All countries</button>
+                <button id="buttonRandomCountry">Random Country</button>
+                <button id="buttonTrivia">Trivia</button>
+            </div>
         </div>
         <!-- random country -->
-        <div id="randomCountryContainer">
+        <!-- <div id="randomCountryContainer">
             <div id="randomCountry" class="hidden"></div>
         </div>
         <div id="allCountries">
-
         </div>
         <div id="trivia">
-
-        </div>
+        </div> -->
     </main>
-    <script src="script.js"></script>
+    <script src="script/main.js"></script>
 </body>
 
 </html>

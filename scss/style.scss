@@ -25,39 +25,8 @@ body {
   align-items: center;
   gap: 15px;
   grid-template-rows: auto 1fr;
-}
-
-header ul {
-  @include flex;
-  list-style: none;
-  height: 100%;
-  // font-size: 2rem;
-}
-
-#hamburger {
-  margin-top: 5px;
-  width: 55px;
-  height: 60px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-  li {
-    width: 100%;
-    height: 5px;
-    background-color: var(--green);
-  }
-}
-
-h1 {
-  font-size: 2rem;
-  text-align: center;
-  order: 1;
-  color: var(--gray);
-  line-height: 2.4rem;
-  span {
-    color: var(--green);
-  }
+  height: 100vh;
+  overflow: hidden;
 }
 
 main {
@@ -69,15 +38,11 @@ main {
   background-color: var(--lightGreen);
   gap: 20px;
 }
-ul {
-  list-style: none;
-}
 
 #containerTabbed {
   padding-top: 20px;
   width: 100%;
   height: fit-content;
-  min-height: 10%;
   text-align: center;
   display: flex;
   justify-content: flex-start;
@@ -108,71 +73,6 @@ ul {
   }
 }
 
-.generateCountry {
-  width: 80% !important;
-  border-radius: 20px !important;
-  position: absolute;
-  transition: width 0.3s ease-in-out;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 700px;
-  opacity: 0;
-}
-.showCountry {
-  opacity: 1 !important;
-  transition: 0.3s opacity ease-in !important;
-}
-
-.moveToBottom {
-  margin-top: 70vh;
-  text-align: center;
-  width: 100%;
-  transition: all 1s ease-in-out;
-}
-
-.hidden {
-  display: none !important;
-  width: 0px;
-  height: 0px;
-  opacity: 0;
-}
-
-#randomCountry {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  opacity: 1;
-  transition: all 0.5s ease-in-out;
-
-  > img {
-    min-height: 280px !important;
-  }
-  img {
-    width: 100%;
-    height: 50%;
-    height: 100%;
-    object-fit: cover;
-  }
-  span {
-    font-weight: 100;
-  }
-  p {
-    font-weight: 800;
-  }
-}
-
-.middle {
-  background-color: var(--lightGreen);
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-}
-
 #logo {
   height: 100px;
   padding-top: 20px;
@@ -182,11 +82,6 @@ ul {
   position: absolute;
   animation: pulse 1.6s ease-in-out infinite both;
   -webkit-animation: pulse 1.6s ease-in-out infinite both;
-}
-
-.opacity0 {
-  opacity: 0 !important;
-  margin: 0 !important;
 }
 
 @-webkit-keyframes pulse {
