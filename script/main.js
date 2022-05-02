@@ -60,13 +60,12 @@ function generateAllCountries() {
                 <p class="languages">Languages:
                 `;
         for (const lang of Object.entries(country.languages)) {
-          if (Object.entries(country.languages).length > 1) {
-            divHtml += `<span>${lang[1]} </span>`;
-          } else {
-            divHtml += `<span>${lang[1]}</span>`;
-          }
+          divHtml += `<span> ${lang[1]} </span>`;
         }
-        divHtml += `</p>`;
+        divHtml += `</p>
+        <img class="more"src="../images/more.svg" alt="no more pic">
+        </div>      
+        `;
         containerCountries.innerHTML += divHtml;
       }
       let images = document.getElementsByClassName("flagPrimary");
@@ -161,12 +160,6 @@ function generateAllCountries() {
         let array = [];
         let continents = document.querySelectorAll(".continents span");
 
-        //Kako da namestim da mogu da imam i kucanje dinamicno a i dinamicko selektovanje iz dropdown liste?
-        // array = [...continents].filter((element) => {
-        //   let countryDiv = element.parentElement.parentElement;
-        //   if (name.value === "") countryDiv.classList.remove("notMatchesName");
-        // });
-
         array = [...continents].filter((element) => {
           let countryDiv = element.parentElement.parentElement;
           countryDiv.classList.remove("notMatchesName");
@@ -217,19 +210,27 @@ function generateAllCountries() {
         });
       });
 
+      let filters = [
+        nameDiv,
+        continentDiv,
+        languageDiv,
+        populationFieldset,
+        unFieldset,
+      ];
+      filters.forEach((element) => {
+        element.style.display = "none";
+      });
       filter.addEventListener("click", (e) => {
-        let filters = [
-          nameDiv,
-          continentDiv,
-          languageDiv,
-          populationFieldset,
-          unFieldset,
-        ];
         filters.forEach((element) => {
+          element.style.transition = "opacity 0.3s linear";
           if (element.style.display === "") {
+            element.style.opacity = "0";
             element.style.display = "none";
           } else {
             element.style.display = "";
+            setTimeout(() => {
+              element.style.opacity = "1";
+            }, 100);
           }
         });
         // e.stopPropagation();
@@ -242,6 +243,80 @@ function generateAllCountries() {
       //     e.stopPropagation();
       //   });
       // });
+
+      createListenersForMore();
+      function createListenersForMore() {
+        let allmore = document.getElementsByClassName("more");
+        console.log(allmore);
+        [...allmore].forEach((element) => {
+          element.addEventListener("click", (e) => {
+            let clickedName = e.target.parentElement.children[1].textContent;
+            allCountriesMainContainer.classList.add("moveOutRight");
+
+            console.log(clickedName);
+            let country = allCountries.filter((element) => {
+              if (element.name === clickedName) {
+                return element;
+              }
+            });
+
+            country = country[0];
+            let populationTotal;
+            if (country.population >= 1000 && country.population <= 999999) {
+              populationTotal =
+                Number.parseFloat(country.population / 1000).toFixed(2) + "K";
+            }
+            if (country.population >= 1000000) {
+              populationTotal =
+                Number.parseFloat(country.population / 1000000).toFixed(2) +
+                "M";
+            }
+            let drivingSide = country.drivingSide.toUpperCase();
+            let html = `
+                    <div class="countryModal">
+                    <img class="flagPrimary" src="${country.flag}" alt="no flag">
+                    <p class="name">${country.name}</p>
+                    <p class="capital">Capital: <span>${country.capital}</span></p>
+                    <p class="continents">Continent: <span>${country.continent}</span></p>
+                    <p class="population">Population: <span>${populationTotal}</span></p>
+                    <p class="carSide">Driving side:${drivingSide}</p>
+                    <p class="un">UN member: ${country.unMember}</p>
+                    <p class="languages">Languages:
+                    `;
+            for (const lang of Object.entries(country.languages)) {
+              html += `<span> ${lang[1]} </span>`;
+            }
+            html += `</p>
+            <p class="currencies">Currencies:
+            `;
+
+            for (const currency of Object.entries(country.currencies)) {
+              if (currency[1] !== "X") {
+                html += `<span>${currency[1].name}(${currency[1].symbol}) </span>`;
+              } else {
+                html += `<span>X</span>`;
+              }
+            }
+            html += `
+            </p>
+            </div>    
+            <img class="back" src="../images/back.svg" alt="no back pic">  
+            `;
+
+            main.insertAdjacentHTML("beforeend", html);
+
+            const back = document.getElementsByClassName("back")[0];
+            const modalCountry =
+              document.getElementsByClassName("countryModal")[0];
+            back.addEventListener("click", (e) => {
+              console.log(back);
+              modalCountry.remove();
+              back.remove();
+              allCountriesMainContainer.classList.remove("moveOutRight");
+            });
+          });
+        });
+      }
     }
     function createWarning() {
       let warning = document.createElement("p");

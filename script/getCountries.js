@@ -37,13 +37,13 @@ const getCountries = async function () {
       for (const [index, country] of data.entries()) {
         const countryObj = new Country(
           country.name.common,
-          country?.capital ? country.capital[0] : "NONE",
-          country.population ? country.population : "NOT KNOWN",
+          country?.capital ? country.capital[0] : "X",
+          country.population ? country.population : "X",
           country.flags.svg,
           country.continents[0],
-          country?.currencies ? country.currencies : "NO CURRENCY",
-          country?.languages ? country.languages : "NO LANG",
-          country?.borders ? country.borders : "NONE",
+          country?.currencies ? country.currencies : "X",
+          country?.languages ? country.languages : "X",
+          country?.borders ? country.borders : "X",
           country?.car.side,
           country.unMember ? "YES" : "NO"
         );
