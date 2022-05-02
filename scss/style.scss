@@ -85,6 +85,18 @@ main {
   -webkit-animation: pulse 1.6s ease-in-out infinite both;
 }
 
+.spinner {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 8px dotted var(--white);
+  animation: spin 3s linear;
+  animation-iteration-count: infinite;
+  // animation-direction: alternate;
+  position: absolute;
+  top: 50%;
+}
+
 @-webkit-keyframes pulse {
   0% {
     -webkit-transform: scale(1);
@@ -166,7 +178,6 @@ main {
   main {
     width: 90%;
     margin: 0 auto;
-    border-radius: 100px 100px 0px 0px;
   }
   #containerTabbed {
     flex-direction: row;

@@ -6,7 +6,7 @@ const buttonTrivia = document.getElementById("buttonTrivia");
 
 let allCountries = [];
 function generateAllCountries() {
-  if (!buttonAllCountries.getAttribute("active")) {
+  if (!document.getElementById("allCountriesMainContainer")) {
     if (allCountries.length <= 250) {
       allCountries = [];
       let i = 0;
@@ -26,10 +26,12 @@ function generateAllCountries() {
     main.appendChild(mainContent.children[3]);
     main.removeChild(mainContent);
     main.insertAdjacentHTML("beforeend", html);
-    const containerCountries = document.getElementById("allCountriesContainer");
-    containerCountries.style.display = "none";
 
-    setTimeout(createGrid, 1400);
+    const container = document.getElementById("allCountriesMainContainer");
+    const containerCountries = document.getElementById("allCountriesContainer");
+    container.style.display = "none";
+
+    setTimeout(createGrid, 100);
 
     function loadTime() {
       let spinner = document.createElement("div");
@@ -57,30 +59,53 @@ function generateAllCountries() {
                 `;
         containerCountries.innerHTML += divHtml;
       }
-      setTimeout(() => {
-        containerCountries.style.display = "";
-        mainContent.id = "slideAllCountries";
-        mainContent.classList.add("tabsAnimationUp");
-        main.removeChild(document.getElementsByClassName("spinner")[0]);
-      }, 1000);
+      let images = document.getElementsByClassName("flagPrimary");
+      let imageLoaded = [];
+
+      for (const img of images) {
+        img.addEventListener("load", () => {
+          imageLoaded.push(1);
+          if (imageLoaded.length === images.length) {
+            container.style.display = "";
+            container.classList.add("animationCountriesContainer");
+            main.removeChild(document.getElementsByClassName("spinner")[0]);
+          }
+        });
+      }
+      let filter = document.getElementById("filters");
+
+      let nameDiv = filter.nextElementSibling;
+      let continentDiv = nameDiv.nextElementSibling;
+      let languageDiv = continentDiv.nextElementSibling;
+      let populationFieldset = languageDiv.nextElementSibling;
+      let unFieldset = populationFieldset.nextElementSibling;
+
+      filter.addEventListener("click", () => {
+        let filters = [
+          nameDiv,
+          continentDiv,
+          languageDiv,
+          populationFieldset,
+          unFieldset,
+        ];
+
+        filters.forEach((e) => {
+          if (e.style.display === "") {
+            e.style.display = "none";
+          } else e.style.display = "";
+        });
+      });
     }
-  }
-  buttonAllCountries.setAttribute("active", 1);
 
-  function createAllCountriesHTML() {
-    return `
+    function createAllCountriesHTML() {
+      return `
 
-    <!-- 
-    <div id="dropdownFilters">
-    </div>
-    <div id="filters">
-    </div>
-    -->
+    <div id="allCountriesMainContainer">
     <form id="formFilters">
       <fieldset id="fieldsetFilters">
-        <legend>Filters</legend>
+        <legend id="filters">Filters</legend>
         <div>
-          <label for="name">Country name:</label>
+          <label for="name">Name:</label>
           <input type="text" id="name" name="name">
         </div>
         <div>
@@ -95,12 +120,19 @@ function generateAllCountries() {
             <option value=""></option>
           </select> 
         </div>
-        <div>
-          <label for="population">Population:</label>
-          <input type="range" id="population" name="population">
-        </div>
         <fieldset>
-        <legend>Is in UN:</legend>
+        <legend class="sublegend">Population:</legend>
+          <div>
+          <label for="populationMin">Min:</label>
+          <input type="number" id="populationMin" name="populationMin">
+          </div>
+          <div>
+          <label for="populationMax">Max:</label>
+          <input type="number" id="populationMax" name="populationMax">
+          </div>
+        </fieldset>
+        <fieldset>
+        <legend class="sublegend">Is in UN:</legend>
           <div>
             <label for="unMemberY">Yes:</label>
             <input type="radio" id="unMemberY" name="unMember">
@@ -110,16 +142,17 @@ function generateAllCountries() {
             <input type="radio" id="unMemberN" name="unMember">
           </div>
         </fieldset>
-        <div>
-        <label for="carSide">Left side driving lane:</label>
-        <input type="checkbox" id="carSide" name="carSide">
-        </div>
       </fieldset>
     </form> 
 
     <div id="allCountriesContainer">
     </div>
+    </div>
+
   `;
+    }
+  } else {
+    return;
   }
 }
 
