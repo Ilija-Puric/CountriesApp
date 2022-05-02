@@ -15,6 +15,7 @@ function generateAllCountries() {
         i++;
       }
     }
+
     loadTime();
     let html = createAllCountriesHTML();
 
@@ -53,10 +54,19 @@ function generateAllCountries() {
                 <div class="country">
                 <img class="flagPrimary" src="${country.flag}" alt="no flag">
                 <p class="name">${country.name}</p>
-                <p class="capital">Capital: ${country.capital}</p>
-                <p class="continents">Continent: ${country.continent}</p>
-                <p class="population">Population: ${populationTotal}</p>
+                <p class="capital">Capital: <span>${country.capital}</span></p>
+                <p class="continents">Continent: <span>${country.continent}</span></p>
+                <p class="population">Population: <span>${populationTotal}</span></p>
+                <p class="languages">Languages:
                 `;
+        for (const lang of Object.entries(country.languages)) {
+          if (Object.entries(country.languages).length > 1) {
+            divHtml += `<span>${lang[1]} </span>`;
+          } else {
+            divHtml += `<span>${lang[1]}</span>`;
+          }
+        }
+        divHtml += `</p>`;
         containerCountries.innerHTML += divHtml;
       }
       let images = document.getElementsByClassName("flagPrimary");
@@ -80,7 +90,134 @@ function generateAllCountries() {
       let populationFieldset = languageDiv.nextElementSibling;
       let unFieldset = populationFieldset.nextElementSibling;
 
-      filter.addEventListener("click", () => {
+      let name = nameDiv.children[1];
+      let continentSelectTag = continentDiv.children[1];
+      let languageSelectTag = languageDiv.children[1];
+
+      fillSelectTags();
+      function fillSelectTags() {
+        fillContinents();
+        fillLanguages();
+        function fillContinents() {
+          const continents = new Set();
+          for (const country of allCountries) {
+            continents.add(country.continent);
+          }
+          continents.forEach((element) => {
+            continentSelectTag.innerHTML += `
+            <option value="${element.toLowerCase()}">${element}</option>
+            `;
+          });
+        }
+        function fillLanguages() {
+          const languages = new Set();
+          for (const country of allCountries) {
+            let languageObj = country.languages;
+            //Iteriranje kroz objekte
+            for (const lang of Object.entries(languageObj)) {
+              //Zbog vrednosti NO LANG koje se rastavi na N O L A N G
+              if (lang[1].length > 1) {
+                languages.add(lang[1]);
+              }
+            }
+          }
+          languages.forEach((element) => {
+            languageSelectTag.innerHTML += `
+            <option value="${element.toLowerCase()}">${element}</option>
+            `;
+          });
+        }
+      }
+
+      const countryNames = document.getElementsByClassName("name");
+      name.addEventListener("input", (e) => {
+        checkIfMatchesCountry();
+        function checkIfMatchesCountry() {
+          let array = [];
+          //Pretvaram u array pa rasclanim
+          array = [...countryNames].filter((element) => {
+            let elName = element.textContent;
+            if (elName.toLowerCase().startsWith(name.value.toLowerCase())) {
+              element.parentElement.classList.remove("notMatchesName");
+              return element;
+            } else {
+              element.parentElement.classList.add("notMatchesName");
+            }
+          });
+
+          let warning = document.getElementById("warning");
+          if (!array.length) {
+            if (!warning) {
+              createWarning();
+            }
+          } else {
+            warning.remove();
+          }
+        }
+      });
+
+      continentSelectTag.addEventListener("change", function () {
+        let continent = this.value;
+        let array = [];
+        let continents = document.querySelectorAll(".continents span");
+
+        //Kako da namestim da mogu da imam i kucanje dinamicno a i dinamicko selektovanje iz dropdown liste?
+        // array = [...continents].filter((element) => {
+        //   let countryDiv = element.parentElement.parentElement;
+        //   if (name.value === "") countryDiv.classList.remove("notMatchesName");
+        // });
+
+        array = [...continents].filter((element) => {
+          let countryDiv = element.parentElement.parentElement;
+          countryDiv.classList.remove("notMatchesName");
+        });
+
+        if (continent !== "choose") {
+          array = [...continents].filter((element) => {
+            let elCountry = element.textContent;
+            let countryDiv = element.parentElement.parentElement;
+
+            if (!countryDiv.classList.contains("notMatchesName")) {
+              if (elCountry.toLowerCase().startsWith(continent.toLowerCase())) {
+                countryDiv.classList.remove("notMatchesName");
+                return element;
+              } else {
+                countryDiv.classList.add("notMatchesName");
+              }
+            }
+          });
+        }
+        // else {
+        //   array = [...continents].filter((element) => {
+        //     let countryDiv = element.parentElement.parentElement;
+        //     countryDiv.classList.remove("notMatchesName");
+        //   });
+        // }
+      });
+
+      languageSelectTag.addEventListener("change", function () {
+        console.log(this.value);
+        let language = this.value;
+        let array = [];
+        let languages = document.querySelectorAll(".languages>span");
+
+        //imam vise jezika u jednoj drzavi...
+        console.log(languages);
+        array = [...languages].filter((element) => {
+          console.log(element);
+          let elLang = element.textContent;
+          let countryDiv = element.parentElement.parentElement;
+          //REDUCE?
+          if (elLang.toLowerCase().startsWith(language.toLowerCase())) {
+            countryDiv.classList.remove("notMatchesName");
+            return element;
+          } else {
+            countryDiv.classList.add("notMatchesName");
+          }
+        });
+      });
+
+      filter.addEventListener("click", (e) => {
         let filters = [
           nameDiv,
           continentDiv,
@@ -88,15 +225,30 @@ function generateAllCountries() {
           populationFieldset,
           unFieldset,
         ];
-
-        filters.forEach((e) => {
-          if (e.style.display === "") {
-            e.style.display = "none";
-          } else e.style.display = "";
+        filters.forEach((element) => {
+          if (element.style.display === "") {
+            element.style.display = "none";
+          } else {
+            element.style.display = "";
+          }
         });
+        // e.stopPropagation();
       });
+      //za skroll razmisli
+      // containerCountries.addEventListener("scroll", (e) => {
+      //   console.log(e);
+      //   filters.forEach((element) => {
+      //     element.style.display = "none";
+      //     e.stopPropagation();
+      //   });
+      // });
     }
-
+    function createWarning() {
+      let warning = document.createElement("p");
+      warning.id = "warning";
+      warning.textContent = "NOTHING FOUND";
+      containerCountries.append(warning);
+    }
     function createAllCountriesHTML() {
       return `
 
@@ -111,13 +263,13 @@ function generateAllCountries() {
         <div>
           <label for="continent">Continent:</label>
           <select name="continent" id="continent">
-            <option value=""></option>
+          <option value="choose">Choose</option>
           </select> 
         </div>
         <div>
           <label for="language">Language:</label>
           <select name="language" id="language">
-            <option value=""></option>
+          <option value="choose">Choose</option>
           </select> 
         </div>
         <fieldset>

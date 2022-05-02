@@ -30,10 +30,14 @@
 
 .capital,
 .continents,
-.population {
+.population,
+.languages {
   padding-left: 20px;
   font-size: 0.9rem;
 }
+// .languages span::before {
+//   content: "-";
+// }
 
 #slideAllCountries {
   width: 90%;
@@ -176,6 +180,25 @@ main {
   }
 }
 
+.matchesName {
+  display: block;
+}
+.notMatchesName {
+  display: none;
+}
+
+#warning {
+  padding: 10px 10px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--white);
+  background-color: var(--black);
+  height: fit-content;
+  width: 50%;
+  margin: 0 auto;
+}
+
 @media screen and (min-width: 700px) {
   #allCountriesContainer {
     padding: 0 100px;
@@ -203,5 +226,19 @@ main {
     select:focus {
       outline: 2px solid var(--black);
     }
+    div {
+      max-width: 500px;
+    }
+  }
+  #warning {
+    font-size: 2rem;
+    padding: 10px 20px;
+    max-width: 340px;
+  }
+  .country {
+    background-color: var(--white);
+    width: 100%;
+    min-height: 450px;
+    box-shadow: rgba(199, 194, 194, 0.329) 20px 10px 50px 20px;
   }
 }

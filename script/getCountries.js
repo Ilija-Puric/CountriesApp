@@ -4,7 +4,7 @@ document.getElementById("buttonRandomCountry").disabled = true;
 document.getElementById("buttonTrivia").disabled = true;
 
 const getCountries = async function () {
-  console.log("lodaing");
+  console.log("loading");
   let countries = await fetch("https://restcountries.com/v3.1/all");
   if (countries.status === 200) {
     let data = await countries.json();
@@ -38,7 +38,7 @@ const getCountries = async function () {
         const countryObj = new Country(
           country.name.common,
           country?.capital ? country.capital[0] : "NONE",
-          country.population,
+          country.population ? country.population : "NOT KNOWN",
           country.flags.svg,
           country.continents[0],
           country?.currencies ? country.currencies : "NO CURRENCY",
