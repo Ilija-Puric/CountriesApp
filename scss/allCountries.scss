@@ -149,7 +149,7 @@ main {
   }
 
   #filters:hover {
-    background-color: var(--lightgreen);
+    background-color: var(--lightGreen);
     color: var(--white);
     border: 3px solid var(--white);
     cursor: pointer;
@@ -185,6 +185,23 @@ main {
   }
 }
 
+#find {
+  width: 100%;
+  height: 45px;
+  border-radius: 25px;
+  border: 2px solid var(--white);
+  background-color: var(--white);
+  max-width: 130px;
+  text-align: center;
+  transition: background-color 0.5s ease-in-out;
+}
+#find:hover {
+  background-color: var(--black);
+  border: 3px solid var(--black);
+  color: var(--white);
+  cursor: pointer;
+}
+
 .matchesName {
   display: block;
 }
@@ -202,6 +219,12 @@ main {
   height: fit-content;
   width: 50%;
   margin: 0 auto;
+}
+
+//ulepsavaj kasnije
+.emptyFields {
+  outline: 2px solid var(--red);
+  transition: outline 0.5s ease-in-out;
 }
 
 .more {
