@@ -139,66 +139,85 @@ function generateAllCountries() {
         if (!isEmpty()) {
           console.log("Can procede");
           toogleErrorClassOff();
-          let arrayMatching;
+          let arrayMatching = [];
           let nameCountry;
           if (name.value !== "") {
             nameCountry = name.value;
             checkIfMatchesCountry();
             function checkIfMatchesCountry() {
               //Pretvaram u array pa rasclanim
-              arrayMatching = [...countryNames].filter((element) => {
-                let elName = element.textContent;
-                if (
-                  elName.toLowerCase().startsWith(nameCountry.toLowerCase())
-                ) {
-                  element.parentElement.classList.remove("notMatchesName");
-                  return element;
-                } else {
-                  element.parentElement.classList.add("notMatchesName");
+              arrayMatching.push(...getMatchingNames());
+              //Custom fja umesto fillter na niz...
+              function getMatchingNames() {
+                let arr = [];
+                //Refaktorisi
+                for (const country of countryNames) {
+                  let elName = country.textContent;
+                  if (
+                    elName.toLowerCase().startsWith(nameCountry.toLowerCase())
+                  ) {
+                    country.parentElement.classList.remove("notMatchesName");
+                    arr.push(country.parentElement);
+                  } else {
+                    country.parentElement.classList.add("notMatchesName");
+                  }
                 }
-              });
+                return arr;
+              }
             }
           }
           if (continentSelectTag.value !== "Choose".toLowerCase()) {
             let continent = continentSelectTag.value;
-            let continents = document.querySelectorAll(".continents span");
-            checkIfMatchesContinent();
-            function checkIfMatchesContinent() {
-              arrayMatching += [...continents].filter((element) => {
-                let elCountry = element.textContent;
-                let countryDiv = element.parentElement.parentElement;
-                if (!countryDiv.classList.contains("notMatchesName")) {
-                  if (
-                    elCountry.toLowerCase().startsWith(continent.toLowerCase())
-                  ) {
-                    countryDiv.classList.remove("notMatchesName");
-                    return element;
-                  } else {
-                    countryDiv.classList.add("notMatchesName");
-                  }
+            getMachingCountries();
+            function getMachingCountries() {
+              console.log(arrayMatching);
+              let arrayMatchingCopy = [];
+              for (const country of arrayMatching) {
+                console.log(country);
+                let continentSpan = country.querySelector(".continents span");
+                if (
+                  continentSpan.textContent
+                    .toLowerCase()
+                    .startsWith(continent.toLowerCase())
+                ) {
+                  country.classList.remove("notMatchesName");
+                  arrayMatchingCopy.push(country);
+                } else {
+                  country.classList.add("notMatchesName");
                 }
-              });
+              }
+              arrayMatching = [];
+              arrayMatching.push(...arrayMatchingCopy);
+              console.log(arrayMatching);
             }
           }
           if (languageSelectTag.value !== "Choose".toLowerCase()) {
-            let language = languageSelectTag.value;
-            let languages = document.querySelectorAll(".languages>span");
+            let language = languageSelectTag.value.toLowerCase();
             //imam vise jezika u jednoj drzavi...
-            checkIfLanguageMatches();
-            function checkIfLanguageMatches() {
-              arrayMatching += [...languages].filter((element) => {
-                let elLang = element.textContent;
-                let countryDiv = element.parentElement.parentElement;
-                //REDUCE?
-                if (elLang.toLowerCase().startsWith(language.toLowerCase())) {
-                  countryDiv.classList.remove("notMatchesName");
-                  return element;
-                } else {
-                  countryDiv.classList.add("notMatchesName");
+            getMatchingLanguages();
+            function getMatchingLanguages() {
+              console.log(arrayMatching);
+              let arrayMatchingCopy = [];
+              for (const country of arrayMatching) {
+                let languagesSpan = country.querySelectorAll(".languages span");
+
+                for (let i = 0; i < languagesSpan.length; i++) {
+                  const lang = languagesSpan[i];
+                  const langTxt = lang.textContent.toLowerCase().trim();
+                  if (langTxt.startsWith(language)) {
+                    console.log(lang.parentElement, lang);
+                    console.log("im innnnnn");
+                    arrayMatchingCopy.push(country);
+                    country.classList.remove("notMatchesName");
+                    break;
+                  } else {
+                    country.classList.add("notMatchesName");
+                  }
                 }
-              });
+              }
+              arrayMatching = [];
+              arrayMatching.push(...arrayMatchingCopy);
             }
-            console.log(arrayMatching);
           }
         } else {
           toogleErrorClassOn();
