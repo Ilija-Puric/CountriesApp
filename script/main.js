@@ -147,10 +147,9 @@ function generateAllCountries() {
             checkIfMatchesCountry();
             function checkIfMatchesCountry() {
               //Pretvaram u array pa rasclanim
-              arrayMatching.push(...getMatchingNames());
+              getMatchingNames();
               //Custom fja umesto fillter na niz...
               function getMatchingNames() {
-                let arr = [];
                 //Refaktorisi
                 for (const country of countryNames) {
                   let elName = country.textContent;
@@ -158,12 +157,11 @@ function generateAllCountries() {
                     elName.toLowerCase().startsWith(nameCountry.toLowerCase())
                   ) {
                     country.parentElement.classList.remove("notMatchesName");
-                    arr.push(country.parentElement);
+                    arrayMatching.push(country.parentElement);
                   } else {
                     country.parentElement.classList.add("notMatchesName");
                   }
                 }
-                return arr;
               }
             }
           }
@@ -221,6 +219,72 @@ function generateAllCountries() {
               }
               arrayMatching = [];
               arrayMatching.push(...arrayMatchingCopy);
+            }
+          }
+
+          let populationMin = Number.parseInt(populationMinTag.value);
+          if (populationMin !== "" && populationMin >= 0) {
+            getMatchingMin();
+            function getMatchingMin() {
+              console.log(arrayMatching);
+              let arrayMatchingCopy = [];
+              arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
+              for (const country of arrayMatching) {
+                let populationSpan = country.querySelector(".population span");
+                let populationSpanValue = populationSpan.textContent;
+
+                if (populationSpanValue.includes("K")) {
+                  populationSpanValue = Number.parseInt(
+                    Number.parseFloat(populationSpanValue).toFixed(2) * 1000
+                  );
+                } else if (populationSpanValue.includes("M")) {
+                  populationSpanValue = Number.parseInt(
+                    Number.parseFloat(populationSpanValue).toFixed(2) * 1000000
+                  );
+                }
+
+                if (populationMin <= populationSpanValue) {
+                  arrayMatchingCopy.push(country);
+                  country.classList.remove("notMatchesName");
+                } else {
+                  country.classList.add("notMatchesName");
+                }
+              }
+              arrayMatching = [];
+              arrayMatching.push(...arrayMatchingCopy);
+              console.log(arrayMatching);
+            }
+          }
+          let populationMax = Number.parseInt(populationMaxTag.value);
+          if (populationMax !== "" && populationMax >= 0) {
+            getMatchingMax();
+            function getMatchingMax() {
+              console.log(arrayMatching);
+              let arrayMatchingCopy = [];
+              arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
+              for (const country of arrayMatching) {
+                let populationSpan = country.querySelector(".population span");
+                let populationSpanValue = populationSpan.textContent;
+
+                if (populationSpanValue.includes("K")) {
+                  populationSpanValue = Number.parseInt(
+                    Number.parseFloat(populationSpanValue).toFixed(2) * 1000
+                  );
+                } else if (populationSpanValue.includes("M")) {
+                  populationSpanValue = Number.parseInt(
+                    Number.parseFloat(populationSpanValue).toFixed(2) * 1000000
+                  );
+                }
+                if (populationSpanValue <= populationMax) {
+                  arrayMatchingCopy.push(country);
+                  country.classList.remove("notMatchesName");
+                } else {
+                  country.classList.add("notMatchesName");
+                }
+              }
+              arrayMatching = [];
+              arrayMatching.push(...arrayMatchingCopy);
+              console.log(arrayMatching);
             }
           }
         } else {
