@@ -134,6 +134,7 @@ function generateAllCountries() {
         }
       }
 
+      const countryDiv = document.getElementsByClassName("country");
       const countryNames = document.getElementsByClassName("name");
       findBtn.addEventListener("click", () => {
         if (!isEmpty()) {
@@ -170,8 +171,10 @@ function generateAllCountries() {
             let continent = continentSelectTag.value;
             getMachingCountries();
             function getMachingCountries() {
-              console.log(arrayMatching);
               let arrayMatchingCopy = [];
+              arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
+
+              console.log("Provera", arrayMatching);
               for (const country of arrayMatching) {
                 console.log(country);
                 let continentSpan = country.querySelector(".continents span");
@@ -198,6 +201,7 @@ function generateAllCountries() {
             function getMatchingLanguages() {
               console.log(arrayMatching);
               let arrayMatchingCopy = [];
+              arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
               for (const country of arrayMatching) {
                 let languagesSpan = country.querySelectorAll(".languages span");
 
