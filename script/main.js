@@ -87,18 +87,14 @@ function generateAllCountries() {
       let continentDiv = nameDiv.nextElementSibling;
       let languageDiv = continentDiv.nextElementSibling;
       let populationFieldset = languageDiv.nextElementSibling;
-      let unFieldset = populationFieldset.nextElementSibling;
-      let findBtn = unFieldset.nextElementSibling;
+      let findBtn = populationFieldset.nextElementSibling;
 
       let name = nameDiv.children[1];
       let continentSelectTag = continentDiv.children[1];
       let languageSelectTag = languageDiv.children[1];
       let populationMinTag = populationFieldset.children[1].children[1];
       let populationMaxTag = populationFieldset.children[2].children[1];
-      let unY = unFieldset.children[1].children[1];
-      let unN = unFieldset.children[2].children[1];
 
-      console.log(unN);
       fillSelectTags();
       function fillSelectTags() {
         fillContinents();
@@ -138,7 +134,6 @@ function generateAllCountries() {
       const countryNames = document.getElementsByClassName("name");
       findBtn.addEventListener("click", () => {
         if (!isEmpty()) {
-          console.log("Can procede");
           toogleErrorClassOff();
           let arrayMatching = [];
           let nameCountry;
@@ -172,9 +167,7 @@ function generateAllCountries() {
               let arrayMatchingCopy = [];
               arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
 
-              console.log("Provera", arrayMatching);
               for (const country of arrayMatching) {
-                console.log(country);
                 let continentSpan = country.querySelector(".continents span");
                 if (
                   continentSpan.textContent
@@ -189,7 +182,6 @@ function generateAllCountries() {
               }
               arrayMatching = [];
               arrayMatching.push(...arrayMatchingCopy);
-              console.log(arrayMatching);
             }
           }
           if (languageSelectTag.value !== "Choose".toLowerCase()) {
@@ -197,7 +189,6 @@ function generateAllCountries() {
             //imam vise jezika u jednoj drzavi...
             getMatchingLanguages();
             function getMatchingLanguages() {
-              console.log(arrayMatching);
               let arrayMatchingCopy = [];
               arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
               for (const country of arrayMatching) {
@@ -207,8 +198,6 @@ function generateAllCountries() {
                   const lang = languagesSpan[i];
                   const langTxt = lang.textContent.toLowerCase().trim();
                   if (langTxt.startsWith(language)) {
-                    console.log(lang.parentElement, lang);
-                    console.log("im innnnnn");
                     arrayMatchingCopy.push(country);
                     country.classList.remove("notMatchesName");
                     break;
@@ -226,7 +215,6 @@ function generateAllCountries() {
           if (populationMin !== "" && populationMin >= 0) {
             getMatchingMin();
             function getMatchingMin() {
-              console.log(arrayMatching);
               let arrayMatchingCopy = [];
               arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
               for (const country of arrayMatching) {
@@ -252,14 +240,12 @@ function generateAllCountries() {
               }
               arrayMatching = [];
               arrayMatching.push(...arrayMatchingCopy);
-              console.log(arrayMatching);
             }
           }
           let populationMax = Number.parseInt(populationMaxTag.value);
           if (populationMax !== "" && populationMax >= 0) {
             getMatchingMax();
             function getMatchingMax() {
-              console.log(arrayMatching);
               let arrayMatchingCopy = [];
               arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
               for (const country of arrayMatching) {
@@ -284,8 +270,12 @@ function generateAllCountries() {
               }
               arrayMatching = [];
               arrayMatching.push(...arrayMatchingCopy);
-              console.log(arrayMatching);
             }
+          }
+          if (!arrayMatching.length) {
+            generateWarning();
+          } else {
+            warning.classList.add("hidden");
           }
         } else {
           toogleErrorClassOn();
@@ -296,9 +286,7 @@ function generateAllCountries() {
             continentSelectTag.value !== "Choose".toLowerCase() ||
             languageSelectTag.value !== "Choose".toLowerCase() ||
             populationMinTag.value !== "" ||
-            populationMaxTag.value !== "" ||
-            unY.checked ||
-            unN.checked
+            populationMaxTag.value !== ""
           ) {
             return false;
           }
@@ -310,8 +298,6 @@ function generateAllCountries() {
           languageSelectTag.classList.remove("emptyFields");
           populationMinTag.classList.remove("emptyFields");
           populationMaxTag.classList.remove("emptyFields");
-          unY.classList.remove("emptyFields");
-          unN.classList.remove("emptyFields");
         }
         function toogleErrorClassOn() {
           name.classList.add("emptyFields");
@@ -319,8 +305,6 @@ function generateAllCountries() {
           languageSelectTag.classList.add("emptyFields");
           populationMinTag.classList.add("emptyFields");
           populationMaxTag.classList.add("emptyFields");
-          unY.classList.add("emptyFields");
-          unN.classList.add("emptyFields");
         }
       });
 
@@ -329,7 +313,6 @@ function generateAllCountries() {
         continentDiv,
         languageDiv,
         populationFieldset,
-        unFieldset,
         findBtn,
       ];
       //First load
@@ -354,13 +337,11 @@ function generateAllCountries() {
       createListenersForMore();
       function createListenersForMore() {
         let allmore = document.getElementsByClassName("more");
-        console.log(allmore);
         [...allmore].forEach((element) => {
           element.addEventListener("click", (e) => {
             let clickedName = e.target.parentElement.children[1].textContent;
             allCountriesMainContainer.classList.add("moveOutRight");
 
-            console.log(clickedName);
             let country = allCountries.filter((element) => {
               if (element.name === clickedName) {
                 return element;
@@ -416,7 +397,6 @@ function generateAllCountries() {
             const modalCountry =
               document.getElementsByClassName("countryModal")[0];
             back.addEventListener("click", (e) => {
-              console.log(back);
               modalCountry.remove();
               back.remove();
               allCountriesMainContainer.classList.remove("moveOutRight");
@@ -425,11 +405,16 @@ function generateAllCountries() {
         });
       }
     }
-    function createWarning() {
-      let warning = document.createElement("p");
-      warning.id = "warning";
-      warning.textContent = "NOTHING FOUND";
-      containerCountries.append(warning);
+    function generateWarning() {
+      if (!document.getElementById("warning")) {
+        let warning = document.createElement("p");
+        warning.id = "warning";
+        warning.textContent = "NOTHING FOUND";
+        containerCountries.append(warning);
+      } else {
+        let warning = document.getElementById("warning");
+        warning.classList.remove("hidden");
+      }
     }
     function createAllCountriesHTML() {
       return `
@@ -463,17 +448,6 @@ function generateAllCountries() {
           <div>
           <label for="populationMax">Max:</label>
           <input type="number" id="populationMax" name="populationMax">
-          </div>
-        </fieldset>
-        <fieldset>
-        <legend class="sublegend">Is in UN:</legend>
-          <div>
-            <label for="unMemberY">Yes:</label>
-            <input type="radio" id="unMemberY" name="unMember">
-          </div>
-          <div>
-            <label for="unMemberN">No:</label>
-            <input type="radio" id="unMemberN" name="unMember">
           </div>
         </fieldset>
         <button type="button" id="find">Find</button">
