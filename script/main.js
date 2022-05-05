@@ -100,10 +100,12 @@ function generateAllCountries() {
         fillContinents();
         fillLanguages();
         function fillContinents() {
-          const continents = new Set();
+          const continentsSet = new Set();
           for (const country of allCountries) {
-            continents.add(country.continent);
+            continentsSet.add(country.continent);
           }
+          //Sortiranje po imenu kontinenta
+          const continents = Array.from(continentsSet).sort();
           continents.forEach((element) => {
             continentSelectTag.innerHTML += `
             <option value="${element.toLowerCase()}">${element}</option>
@@ -111,17 +113,18 @@ function generateAllCountries() {
           });
         }
         function fillLanguages() {
-          const languages = new Set();
+          const languagesSet = new Set();
           for (const country of allCountries) {
             let languageObj = country.languages;
             //Iteriranje kroz objekte
             for (const lang of Object.entries(languageObj)) {
               //Zbog vrednosti NO LANG koje se rastavi na N O L A N G
               if (lang[1].length > 1) {
-                languages.add(lang[1]);
+                languagesSet.add(lang[1]);
               }
             }
           }
+          const languages = Array.from(languagesSet).sort();
           languages.forEach((element) => {
             languageSelectTag.innerHTML += `
             <option value="${element.toLowerCase()}">${element}</option>
@@ -131,13 +134,12 @@ function generateAllCountries() {
       }
 
       const countryDiv = document.getElementsByClassName("country");
-      const countryNames = document.getElementsByClassName("name");
       findBtn.addEventListener("click", () => {
         if (!isEmpty()) {
           toogleErrorClassOff();
           let arrayMatching = [];
-          let nameCountry;
           if (name.value !== "") {
+            let nameCountry;
             nameCountry = name.value;
             checkIfMatchesCountry();
             function checkIfMatchesCountry() {
@@ -146,15 +148,16 @@ function generateAllCountries() {
               //Custom fja umesto fillter na niz...
               function getMatchingNames() {
                 //Refaktorisi
-                for (const country of countryNames) {
-                  let elName = country.textContent;
+                for (const country of countryDiv) {
+                  let elName = country.querySelector(".name").textContent;
+                  console.log(elName);
                   if (
                     elName.toLowerCase().startsWith(nameCountry.toLowerCase())
                   ) {
-                    country.parentElement.classList.remove("notMatchesName");
-                    arrayMatching.push(country.parentElement);
+                    country.classList.remove("notMatchesName");
+                    arrayMatching.push(country);
                   } else {
-                    country.parentElement.classList.add("notMatchesName");
+                    country.classList.add("notMatchesName");
                   }
                 }
               }
@@ -213,11 +216,13 @@ function generateAllCountries() {
 
           let populationMin = Number.parseInt(populationMinTag.value);
           if (populationMin !== "" && populationMin >= 0) {
+            console.log("BEFORE", arrayMatching);
             getMatchingMin();
             function getMatchingMin() {
               let arrayMatchingCopy = [];
               arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
               for (const country of arrayMatching) {
+                console.log(country);
                 let populationSpan = country.querySelector(".population span");
                 let populationSpanValue = populationSpan.textContent;
 
@@ -240,6 +245,7 @@ function generateAllCountries() {
               }
               arrayMatching = [];
               arrayMatching.push(...arrayMatchingCopy);
+              console.log("AFTER", arrayMatching);
             }
           }
           let populationMax = Number.parseInt(populationMaxTag.value);
@@ -275,22 +281,11 @@ function generateAllCountries() {
           if (!arrayMatching.length) {
             generateWarning();
           } else {
-            warning.classList.add("hidden");
+            if (document.getElementById("warning"))
+              warning.classList.add("hidden");
           }
         } else {
           toogleErrorClassOn();
-        }
-        function isEmpty() {
-          if (
-            name.value !== "" ||
-            continentSelectTag.value !== "Choose".toLowerCase() ||
-            languageSelectTag.value !== "Choose".toLowerCase() ||
-            populationMinTag.value !== "" ||
-            populationMaxTag.value !== ""
-          ) {
-            return false;
-          }
-          return true;
         }
         function toogleErrorClassOff() {
           name.classList.remove("emptyFields");
@@ -320,6 +315,10 @@ function generateAllCountries() {
         element.style.display = "none";
       });
       filter.addEventListener("click", (e) => {
+        emptyFieldsInForm();
+        if (document.getElementsByClassName("empty")[0]) {
+          document.getElementsByClassName("empty")[0].remove();
+        }
         filters.forEach((element) => {
           element.style.transition = "opacity 0.3s linear";
           if (element.style.display === "") {
@@ -332,6 +331,26 @@ function generateAllCountries() {
             }, 100);
           }
         });
+      });
+
+      const fieldsetForm = document.getElementById("fieldsetFilters");
+      fieldsetForm.addEventListener("input", () => {
+        if (!isEmpty()) {
+          if (!document.getElementsByClassName("empty")[0]) {
+            let empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = "X";
+            findBtn.insertAdjacentElement("afterend", empty);
+
+            empty.addEventListener("click", () => {
+              emptyFieldsInForm();
+              empty.remove();
+            });
+          }
+        } else {
+          console.log("EMPTY NOW");
+          document.getElementsByClassName("empty")[0].remove();
+        }
       });
 
       createListenersForMore();
@@ -367,7 +386,7 @@ function generateAllCountries() {
                     <p class="capital">Capital: <span>${country.capital}</span></p>
                     <p class="continents">Continent: <span>${country.continent}</span></p>
                     <p class="population">Population: <span>${populationTotal}</span></p>
-                    <p class="carSide">Driving side:${drivingSide}</p>
+                    <p class="carSide">Driving side: ${drivingSide}</p>
                     <p class="un">UN member: ${country.unMember}</p>
                     <p class="languages">Languages:
                     `;
@@ -403,6 +422,28 @@ function generateAllCountries() {
             });
           });
         });
+      }
+
+      function emptyFieldsInForm() {
+        name.value = "";
+        continentSelectTag.value = "choose";
+        languageSelectTag.value = "choose";
+        populationMinTag.value = "";
+        populationMaxTag.value = "";
+      }
+      function createClear() {}
+
+      function isEmpty() {
+        if (
+          name.value !== "" ||
+          continentSelectTag.value !== "Choose".toLowerCase() ||
+          languageSelectTag.value !== "Choose".toLowerCase() ||
+          populationMinTag.value !== "" ||
+          populationMaxTag.value !== ""
+        ) {
+          return false;
+        }
+        return true;
       }
     }
     function generateWarning() {

@@ -64,7 +64,6 @@ const getCountries = async function () {
 };
 
 if (localStorage.getItem(0) && localStorage.getItem(249)) {
-  console.log("Local storage filled");
   document.getElementById("buttonAllCountries").disabled = false;
   document.getElementById("buttonRandomCountry").disabled = false;
   document.getElementById("buttonTrivia").disabled = false;

@@ -283,6 +283,26 @@ main {
   transition: 0.4s transform ease-in-out;
 }
 
+.empty {
+  width: 30px !important;
+  height: 30px !important;
+  background-color: var(--white);
+  border-radius: 50%;
+  position: relative;
+  top: -55px;
+  left: 90px;
+  color: var(--black);
+  font-weight: bold;
+  padding-left: 10px;
+  padding-top: 1px;
+}
+
+.empty:hover {
+  cursor: pointer;
+  background-color: var(--black);
+  color: var(--white);
+}
+
 @-webkit-keyframes moveOutRight {
   0% {
     -webkit-transform: translateX(0);
