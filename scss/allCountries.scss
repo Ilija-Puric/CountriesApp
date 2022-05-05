@@ -23,10 +23,15 @@
   object-fit: cover;
 }
 .name {
-  font-size: 2rem;
+  font-size: 1.2rem;
   font-weight: bolder;
-  color: var(--black);
+  background-color: var(--black);
+  width: 50%;
   padding-left: 10px;
+  margin-left: 10px;
+  color: var(--white);
+  margin-top: 10px;
+  max-width: 250px;
 }
 
 .capital,
@@ -184,6 +189,11 @@ main {
     gap: 20px;
   }
 }
+#btnFindContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center !important;
+}
 
 #find {
   width: 100%;
@@ -219,6 +229,8 @@ main {
   height: fit-content;
   width: 50%;
   margin: 0 auto;
+
+  animation: blink 0.5s both;
 }
 
 //ulepsavaj kasnije
@@ -265,8 +277,9 @@ main {
     margin-left: 20px;
     background-color: var(--black);
     padding-left: 10px !important;
-    padding-right: 5px;
+    padding-right: 10px;
     color: var(--white);
+    width: fit-content;
   }
   p {
     font-size: 1.2rem;
@@ -288,19 +301,78 @@ main {
   height: 30px !important;
   background-color: var(--white);
   border-radius: 50%;
-  position: relative;
-  top: -55px;
-  left: 90px;
+
   color: var(--black);
   font-weight: bold;
   padding-left: 10px;
   padding-top: 1px;
+  -webkit-animation: enterBounce 0.7s cubic-bezier(0.25, 0.5, 0.5, 0.9) both;
+  animation: enterBounce 0.7s cubic-bezier(0.25, 0.5, 0.5, 0.9) both;
 }
 
 .empty:hover {
   cursor: pointer;
   background-color: var(--black);
   color: var(--white);
+}
+
+@-webkit-keyframes enterBounce {
+  0%,
+  100% {
+    -webkit-transform: translateX(0%);
+    transform: translateX(0%);
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+  }
+  15% {
+    -webkit-transform: translateX(-30px) rotate(-6deg);
+    transform: translateX(-30px) rotate(-6deg);
+  }
+  30% {
+    -webkit-transform: translateX(15px) rotate(6deg);
+    transform: translateX(15px) rotate(6deg);
+  }
+  45% {
+    -webkit-transform: translateX(-15px) rotate(-3.6deg);
+    transform: translateX(-15px) rotate(-3.6deg);
+  }
+  60% {
+    -webkit-transform: translateX(9px) rotate(2.4deg);
+    transform: translateX(9px) rotate(2.4deg);
+  }
+  75% {
+    -webkit-transform: translateX(-6px) rotate(-1.2deg);
+    transform: translateX(-6px) rotate(-1.2deg);
+  }
+}
+@keyframes enterBounce {
+  0%,
+  100% {
+    -webkit-transform: translateX(0%);
+    transform: translateX(0%);
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+  }
+  15% {
+    -webkit-transform: translateX(-30px) rotate(-6deg);
+    transform: translateX(-30px) rotate(-6deg);
+  }
+  30% {
+    -webkit-transform: translateX(15px) rotate(6deg);
+    transform: translateX(15px) rotate(6deg);
+  }
+  45% {
+    -webkit-transform: translateX(-15px) rotate(-3.6deg);
+    transform: translateX(-15px) rotate(-3.6deg);
+  }
+  60% {
+    -webkit-transform: translateX(9px) rotate(2.4deg);
+    transform: translateX(9px) rotate(2.4deg);
+  }
+  75% {
+    -webkit-transform: translateX(-6px) rotate(-1.2deg);
+    transform: translateX(-6px) rotate(-1.2deg);
+  }
 }
 
 @-webkit-keyframes moveOutRight {
@@ -324,6 +396,29 @@ main {
   100% {
     -webkit-transform: translateX(5000px);
     transform: translateX(5000px);
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes blink {
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+@keyframes blink {
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  25%,
+  75% {
     opacity: 0;
   }
 }

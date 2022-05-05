@@ -87,7 +87,7 @@ function generateAllCountries() {
       let continentDiv = nameDiv.nextElementSibling;
       let languageDiv = continentDiv.nextElementSibling;
       let populationFieldset = languageDiv.nextElementSibling;
-      let findBtn = populationFieldset.nextElementSibling;
+      let findBtn = populationFieldset.nextElementSibling.children[0];
 
       let name = nameDiv.children[1];
       let continentSelectTag = continentDiv.children[1];
@@ -315,7 +315,6 @@ function generateAllCountries() {
         element.style.display = "none";
       });
       filter.addEventListener("click", (e) => {
-        emptyFieldsInForm();
         if (document.getElementsByClassName("empty")[0]) {
           document.getElementsByClassName("empty")[0].remove();
         }
@@ -347,10 +346,7 @@ function generateAllCountries() {
               empty.remove();
             });
           }
-        } else {
-          console.log("EMPTY NOW");
-          document.getElementsByClassName("empty")[0].remove();
-        }
+        } else document.getElementsByClassName("empty")[0].remove();
       });
 
       createListenersForMore();
@@ -430,8 +426,10 @@ function generateAllCountries() {
         languageSelectTag.value = "choose";
         populationMinTag.value = "";
         populationMaxTag.value = "";
+        for (const country of countryDiv) {
+          country.classList.remove("notMatchesName");
+        }
       }
-      function createClear() {}
 
       function isEmpty() {
         if (
@@ -491,7 +489,7 @@ function generateAllCountries() {
           <input type="number" id="populationMax" name="populationMax">
           </div>
         </fieldset>
-        <button type="button" id="find">Find</button">
+        <div id="btnFindContainer"><button type="button" id="find">Find</button"></div>
       </fieldset>
     </form> 
 
