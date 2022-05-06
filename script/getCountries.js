@@ -1,7 +1,5 @@
 //Da ne moze da se pokrene dokle god nisu ucitani podaci iz fetcha
 document.getElementById("buttonAllCountries").disabled = true;
-document.getElementById("buttonRandomCountry").disabled = true;
-document.getElementById("buttonTrivia").disabled = true;
 
 const getCountries = async function () {
   console.log("loading");
@@ -53,8 +51,6 @@ const getCountries = async function () {
 
       console.log("done");
       document.getElementById("buttonAllCountries").disabled = false;
-      document.getElementById("buttonRandomCountry").disabled = false;
-      document.getElementById("buttonTrivia").disabled = false;
 
       return data;
     }
@@ -65,6 +61,4 @@ const getCountries = async function () {
 
 if (localStorage.getItem(0) && localStorage.getItem(249)) {
   document.getElementById("buttonAllCountries").disabled = false;
-  document.getElementById("buttonRandomCountry").disabled = false;
-  document.getElementById("buttonTrivia").disabled = false;
 } else getCountries();

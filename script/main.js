@@ -1,8 +1,6 @@
 const main = document.getElementsByTagName("main")[0];
 const mainContent = document.getElementById("mainContent");
 const buttonAllCountries = document.getElementById("buttonAllCountries");
-const buttonRandomCountry = document.getElementById("buttonRandomCountry");
-const buttonTrivia = document.getElementById("buttonTrivia");
 
 let allCountries = [];
 function generateAllCountries() {
@@ -24,7 +22,6 @@ function generateAllCountries() {
     styleForAllCountries.href = "style/allCountries.css";
     document.head.append(styleForAllCountries);
 
-    main.appendChild(mainContent.children[3]);
     main.removeChild(mainContent);
     main.insertAdjacentHTML("beforeend", html);
 
@@ -63,7 +60,7 @@ function generateAllCountries() {
           divHtml += `<span> ${lang[1]} </span>`;
         }
         divHtml += `</p>
-        <img class="more"src="../images/more.svg" alt="no more pic">
+        <img class="more"src="images/more.svg" alt="no more pic">
         </div>      
         `;
         containerCountries.innerHTML += divHtml;
@@ -118,10 +115,7 @@ function generateAllCountries() {
             let languageObj = country.languages;
             //Iteriranje kroz objekte
             for (const lang of Object.entries(languageObj)) {
-              //Zbog vrednosti NO LANG koje se rastavi na N O L A N G
-              if (lang[1].length > 1) {
-                languagesSet.add(lang[1]);
-              }
+              languagesSet.add(lang[1]);
             }
           }
           const languages = Array.from(languagesSet).sort();
@@ -135,147 +129,158 @@ function generateAllCountries() {
 
       const countryDiv = document.getElementsByClassName("country");
       findBtn.addEventListener("click", () => {
-        if (!isEmpty()) {
+        if (canProcede()) {
           toogleErrorClassOff();
           let arrayMatching = [];
           if (name.value !== "") {
-            let nameCountry;
-            nameCountry = name.value;
-            checkIfMatchesCountry();
+            let nameCountry = name.value.toLowerCase();
+            let result = checkIfMatchesCountry();
+            console.log(result);
+            if (!result) {
+              return false;
+            }
             function checkIfMatchesCountry() {
-              //Pretvaram u array pa rasclanim
-              getMatchingNames();
-              //Custom fja umesto fillter na niz...
-              function getMatchingNames() {
-                //Refaktorisi
-                for (const country of countryDiv) {
-                  let elName = country.querySelector(".name").textContent;
-                  console.log(elName);
-                  if (
-                    elName.toLowerCase().startsWith(nameCountry.toLowerCase())
-                  ) {
-                    country.classList.remove("notMatchesName");
-                    arrayMatching.push(country);
-                  } else {
-                    country.classList.add("notMatchesName");
-                  }
+              arrayMatching = [...countryDiv].filter((e) => {
+                let nameText = e
+                  .querySelector(".name")
+                  .textContent.toLowerCase();
+                if (nameText.startsWith(nameCountry)) {
+                  e.classList.remove("notMatchesName");
+                  return e;
+                } else {
+                  e.classList.add("notMatchesName");
                 }
-              }
+              });
+              if (!arrayMatching.length) {
+                generateWarning();
+                return false;
+              } else return true;
             }
           }
+
           if (continentSelectTag.value !== "Choose".toLowerCase()) {
             let continent = continentSelectTag.value;
-            getMachingCountries();
-            function getMachingCountries() {
-              let arrayMatchingCopy = [];
-              arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
-
-              for (const country of arrayMatching) {
-                let continentSpan = country.querySelector(".continents span");
-                if (
-                  continentSpan.textContent
-                    .toLowerCase()
-                    .startsWith(continent.toLowerCase())
-                ) {
-                  country.classList.remove("notMatchesName");
-                  arrayMatchingCopy.push(country);
+            arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
+            let result = checkIfMatchesContinent();
+            if (!result) {
+              return false;
+            }
+            console.log("Continents matching", arrayMatching);
+            function checkIfMatchesContinent() {
+              arrayMatching = [...arrayMatching].filter((e) => {
+                let continentText = e
+                  .querySelector(".continents span")
+                  .textContent.toLowerCase();
+                if (continentText.startsWith(continent)) {
+                  e.classList.remove("notMatchesName");
+                  return e;
                 } else {
-                  country.classList.add("notMatchesName");
+                  e.classList.add("notMatchesName");
                 }
-              }
-              arrayMatching = [];
-              arrayMatching.push(...arrayMatchingCopy);
+              });
+              if (!arrayMatching.length) {
+                generateWarning();
+                return false;
+              } else return true;
             }
           }
           if (languageSelectTag.value !== "Choose".toLowerCase()) {
             let language = languageSelectTag.value.toLowerCase();
             //imam vise jezika u jednoj drzavi...
-            getMatchingLanguages();
-            function getMatchingLanguages() {
-              let arrayMatchingCopy = [];
-              arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
-              for (const country of arrayMatching) {
-                let languagesSpan = country.querySelectorAll(".languages span");
-
+            arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
+            let result = checkIfMatchesLanguages();
+            if (!result) {
+              return false;
+            }
+            console.log("Languages matching", arrayMatching);
+            function checkIfMatchesLanguages() {
+              arrayMatching = [...arrayMatching].filter((e) => {
+                let languagesSpan = e.querySelectorAll(".languages span");
                 for (let i = 0; i < languagesSpan.length; i++) {
                   const lang = languagesSpan[i];
                   const langTxt = lang.textContent.toLowerCase().trim();
                   if (langTxt.startsWith(language)) {
-                    arrayMatchingCopy.push(country);
-                    country.classList.remove("notMatchesName");
-                    break;
+                    e.classList.remove("notMatchesName");
+                    return e;
                   } else {
-                    country.classList.add("notMatchesName");
+                    e.classList.add("notMatchesName");
                   }
                 }
-              }
-              arrayMatching = [];
-              arrayMatching.push(...arrayMatchingCopy);
+              });
+              if (!arrayMatching.length) {
+                generateWarning();
+                return false;
+              } else return true;
             }
           }
 
           let populationMin = Number.parseInt(populationMinTag.value);
           if (populationMin !== "" && populationMin >= 0) {
-            console.log("BEFORE", arrayMatching);
-            getMatchingMin();
-            function getMatchingMin() {
-              let arrayMatchingCopy = [];
-              arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
-              for (const country of arrayMatching) {
-                console.log(country);
-                let populationSpan = country.querySelector(".population span");
-                let populationSpanValue = populationSpan.textContent;
-
+            arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
+            let result = checkIfMatchesMin();
+            console.log(result);
+            if (!result) {
+              return false;
+            }
+            console.log("POP MIN", arrayMatching);
+            function checkIfMatchesMin() {
+              arrayMatching = [...arrayMatching].filter((e) => {
+                let populationSpanValue =
+                  e.querySelector(".population span").textContent;
+                let num = Number.parseInt(
+                  Number.parseFloat(populationSpanValue).toFixed(2)
+                );
                 if (populationSpanValue.includes("K")) {
-                  populationSpanValue = Number.parseInt(
-                    Number.parseFloat(populationSpanValue).toFixed(2) * 1000
-                  );
+                  num *= 1000;
                 } else if (populationSpanValue.includes("M")) {
-                  populationSpanValue = Number.parseInt(
-                    Number.parseFloat(populationSpanValue).toFixed(2) * 1000000
-                  );
+                  num *= 1000000;
                 }
-
-                if (populationMin <= populationSpanValue) {
-                  arrayMatchingCopy.push(country);
-                  country.classList.remove("notMatchesName");
+                if (populationMin <= num) {
+                  arrayMatching.push(e);
+                  e.classList.remove("notMatchesName");
+                  return e;
                 } else {
-                  country.classList.add("notMatchesName");
+                  e.classList.add("notMatchesName");
                 }
-              }
-              arrayMatching = [];
-              arrayMatching.push(...arrayMatchingCopy);
-              console.log("AFTER", arrayMatching);
+              });
+              if (!arrayMatching.length) {
+                generateWarning();
+                return false;
+              } else return true;
             }
           }
           let populationMax = Number.parseInt(populationMaxTag.value);
           if (populationMax !== "" && populationMax >= 0) {
-            getMatchingMax();
-            function getMatchingMax() {
-              let arrayMatchingCopy = [];
-              arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
-              for (const country of arrayMatching) {
-                let populationSpan = country.querySelector(".population span");
-                let populationSpanValue = populationSpan.textContent;
-
+            arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
+            let result = checkIfMatchesMax();
+            if (!result) {
+              return false;
+            }
+            console.log("POP MAX", arrayMatching);
+            function checkIfMatchesMax() {
+              arrayMatching = [...arrayMatching].filter((e) => {
+                let populationSpanValue =
+                  e.querySelector(".population span").textContent;
+                let num = Number.parseInt(
+                  Number.parseFloat(populationSpanValue).toFixed(2)
+                );
                 if (populationSpanValue.includes("K")) {
-                  populationSpanValue = Number.parseInt(
-                    Number.parseFloat(populationSpanValue).toFixed(2) * 1000
-                  );
+                  num *= 1000;
                 } else if (populationSpanValue.includes("M")) {
-                  populationSpanValue = Number.parseInt(
-                    Number.parseFloat(populationSpanValue).toFixed(2) * 1000000
-                  );
+                  num *= 1000000;
                 }
-                if (populationSpanValue <= populationMax) {
-                  arrayMatchingCopy.push(country);
-                  country.classList.remove("notMatchesName");
+                if (num <= populationMax) {
+                  arrayMatching.push(e);
+                  e.classList.remove("notMatchesName");
+                  return e;
                 } else {
-                  country.classList.add("notMatchesName");
+                  e.classList.add("notMatchesName");
                 }
-              }
-              arrayMatching = [];
-              arrayMatching.push(...arrayMatchingCopy);
+              });
+              if (!arrayMatching.length) {
+                generateWarning();
+                return false;
+              } else return true;
             }
           }
           if (!arrayMatching.length) {
@@ -334,7 +339,7 @@ function generateAllCountries() {
 
       const fieldsetForm = document.getElementById("fieldsetFilters");
       fieldsetForm.addEventListener("input", () => {
-        if (!isEmpty()) {
+        if (canProcede()) {
           if (!document.getElementsByClassName("empty")[0]) {
             let empty = document.createElement("div");
             empty.className = "empty";
@@ -403,7 +408,7 @@ function generateAllCountries() {
             html += `
             </p>
             </div>    
-            <img class="back" src="../images/back.svg" alt="no back pic">  
+            <img class="back" src="images/back.svg" alt="no back pic">  
             `;
 
             main.insertAdjacentHTML("beforeend", html);
@@ -431,7 +436,7 @@ function generateAllCountries() {
         }
       }
 
-      function isEmpty() {
+      function canProcede() {
         if (
           name.value !== "" ||
           continentSelectTag.value !== "Choose".toLowerCase() ||
@@ -439,9 +444,8 @@ function generateAllCountries() {
           populationMinTag.value !== "" ||
           populationMaxTag.value !== ""
         ) {
-          return false;
-        }
-        return true;
+          return true;
+        } else return false;
       }
     }
     function generateWarning() {
@@ -482,11 +486,11 @@ function generateAllCountries() {
         <legend class="sublegend">Population:</legend>
           <div>
           <label for="populationMin">Min:</label>
-          <input type="number" id="populationMin" name="populationMin">
+          <input min="0" type="number" id="populationMin" name="populationMin">
           </div>
           <div>
           <label for="populationMax">Max:</label>
-          <input type="number" id="populationMax" name="populationMax">
+          <input min="0" type="number" id="populationMax" name="populationMax">
           </div>
         </fieldset>
         <div id="btnFindContainer"><button type="button" id="find">Find</button"></div>
