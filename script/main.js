@@ -160,12 +160,14 @@ function generateAllCountries() {
 
           if (continentSelectTag.value !== "Choose".toLowerCase()) {
             let continent = continentSelectTag.value;
-            arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
+            arrayMatching = arrayMatching.length
+              ? arrayMatching
+              : [...countryDiv];
+            //[...countryDiv] jer je countryDiv HTMLCollection pa nece moci da rade Array metode na njega
             let result = checkIfMatchesContinent();
             if (!result) {
               return false;
             }
-            console.log("Continents matching", arrayMatching);
             function checkIfMatchesContinent() {
               arrayMatching = [...arrayMatching].filter((e) => {
                 let continentText = e
@@ -187,12 +189,13 @@ function generateAllCountries() {
           if (languageSelectTag.value !== "Choose".toLowerCase()) {
             let language = languageSelectTag.value.toLowerCase();
             //imam vise jezika u jednoj drzavi...
-            arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
+            arrayMatching = arrayMatching.length
+              ? arrayMatching
+              : [...countryDiv];
             let result = checkIfMatchesLanguages();
             if (!result) {
               return false;
             }
-            console.log("Languages matching", arrayMatching);
             function checkIfMatchesLanguages() {
               arrayMatching = [...arrayMatching].filter((e) => {
                 let languagesSpan = e.querySelectorAll(".languages span");
@@ -216,13 +219,14 @@ function generateAllCountries() {
 
           let populationMin = Number.parseInt(populationMinTag.value);
           if (populationMin !== "" && populationMin >= 0) {
-            arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
+            arrayMatching = arrayMatching.length
+              ? arrayMatching
+              : [...countryDiv];
             let result = checkIfMatchesMin();
             console.log(result);
             if (!result) {
               return false;
             }
-            console.log("POP MIN", arrayMatching);
             function checkIfMatchesMin() {
               arrayMatching = [...arrayMatching].filter((e) => {
                 let populationSpanValue =
@@ -251,12 +255,13 @@ function generateAllCountries() {
           }
           let populationMax = Number.parseInt(populationMaxTag.value);
           if (populationMax !== "" && populationMax >= 0) {
-            arrayMatching = arrayMatching.length ? arrayMatching : countryDiv;
+            arrayMatching = arrayMatching.length
+              ? arrayMatching
+              : [...countryDiv];
             let result = checkIfMatchesMax();
             if (!result) {
               return false;
             }
-            console.log("POP MAX", arrayMatching);
             function checkIfMatchesMax() {
               arrayMatching = [...arrayMatching].filter((e) => {
                 let populationSpanValue =
@@ -320,10 +325,21 @@ function generateAllCountries() {
         element.style.display = "none";
       });
       filter.addEventListener("click", (e) => {
-        if (document.getElementsByClassName("empty")[0]) {
-          document.getElementsByClassName("empty")[0].remove();
-        }
         filters.forEach((element) => {
+          styleAdd(element);
+        });
+        if (document.getElementsByClassName("empty")[0]) {
+          let emptyBtn = document.getElementsByClassName("empty")[0];
+          if (nameDiv.style.display == "none") {
+            console.log("YES");
+            emptyBtn.classList.add("hideMe");
+          } else {
+            console.log("NO");
+            emptyBtn.classList.remove("hideMe");
+          }
+        }
+
+        function styleAdd(element) {
           element.style.transition = "opacity 0.3s linear";
           if (element.style.display === "") {
             element.style.opacity = "0";
@@ -334,7 +350,7 @@ function generateAllCountries() {
               element.style.opacity = "1";
             }, 100);
           }
-        });
+        }
       });
 
       const fieldsetForm = document.getElementById("fieldsetFilters");
@@ -461,7 +477,6 @@ function generateAllCountries() {
     }
     function createAllCountriesHTML() {
       return `
-
     <div id="allCountriesMainContainer">
     <form id="formFilters">
       <fieldset id="fieldsetFilters">
