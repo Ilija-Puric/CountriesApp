@@ -1,6 +1,7 @@
 const main = document.getElementsByTagName("main")[0];
 const mainContent = document.getElementById("mainContent");
 const buttonAllCountries = document.getElementById("buttonAllCountries");
+let logo = document.getElementById("logo");
 
 let allCountries = [];
 function generateAllCountries() {
@@ -135,7 +136,6 @@ function generateAllCountries() {
           if (name.value !== "") {
             let nameCountry = name.value.toLowerCase();
             let result = checkIfMatchesCountry();
-            console.log(result);
             if (!result) {
               return false;
             }
@@ -223,7 +223,6 @@ function generateAllCountries() {
               ? arrayMatching
               : [...countryDiv];
             let result = checkIfMatchesMin();
-            console.log(result);
             if (!result) {
               return false;
             }
@@ -231,9 +230,7 @@ function generateAllCountries() {
               arrayMatching = [...arrayMatching].filter((e) => {
                 let populationSpanValue =
                   e.querySelector(".population span").textContent;
-                let num = Number.parseInt(
-                  Number.parseFloat(populationSpanValue).toFixed(2)
-                );
+                let num = Number.parseFloat(populationSpanValue).toFixed(2);
                 if (populationSpanValue.includes("K")) {
                   num *= 1000;
                 } else if (populationSpanValue.includes("M")) {
@@ -266,9 +263,7 @@ function generateAllCountries() {
               arrayMatching = [...arrayMatching].filter((e) => {
                 let populationSpanValue =
                   e.querySelector(".population span").textContent;
-                let num = Number.parseInt(
-                  Number.parseFloat(populationSpanValue).toFixed(2)
-                );
+                let num = Number.parseFloat(populationSpanValue).toFixed(2);
                 if (populationSpanValue.includes("K")) {
                   num *= 1000;
                 } else if (populationSpanValue.includes("M")) {
@@ -288,11 +283,123 @@ function generateAllCountries() {
               } else return true;
             }
           }
+
           if (!arrayMatching.length) {
             generateWarning();
           } else {
-            if (document.getElementById("warning"))
+            if (
+              !logo.classList.contains("logoStat") &&
+              !document.getElementById("statistics")
+            ) {
+              createStatsAndListeners();
+            } else {
+              logo.classList.add("logoStat");
+              logo.addEventListener("click", showStats);
+            }
+
+            function createStatsAndListeners() {
+              createStats();
+              logo.classList.add("logoStat");
+              logo.addEventListener("click", showStats);
+            }
+            function createStats() {
+              let htmlText = ` <div id="statistics" class="hidden">
+              <h2>Matching criteria</h2>
+              <p class="stat">Total countries:<span id="totalCountries"></span></p>
+              <p class="stat">Total population:<span id="totalP"></span></p>
+              <ul>
+                  <p class="stat">Total languages:<span id="totalLanguagesSpoken"></span></p>
+                  <ul id="langsStat">
+                  </ul>
+              </ul>
+              <ul>
+                  <p>Driving side</p>
+                  <li>
+                      <p class="stat">Left:<span id="totalDriveL"></span></p>
+                  </li>
+                  <li>
+                      <p class="stat">Right:<span id="totalDriveR"></span></p>
+                  </li>
+              </ul>
+              <ul>
+                  <p>In UN:</p>
+                  <li>
+                      <p class="stat">YES:<span id="totalUnY"></span></p>
+                  </li>
+                  <li>
+                      <p class="stat">NO:<span id="totalUnN"></span></p>
+                  </li>
+              </ul>
+              </div>`;
+              allCountriesMainContainer.insertAdjacentHTML(
+                "beforebegin",
+                htmlText
+              );
+            }
+            if (document.getElementById("warning")) {
               warning.classList.add("hidden");
+            }
+
+            let totalCountriesSpan = document.getElementById("totalCountries");
+            let totalPopSpan = document.getElementById("totalP");
+            let totalLangSpan = document.getElementById("totalLanguagesSpoken");
+            let totalLangsUl = document.getElementById("langsStat");
+            let totalDriveL = document.getElementById("totalDriveL");
+            let totalDriveR = document.getElementById("totalDriveR");
+            let totalUnY = document.getElementById("totalUnY");
+            let totalUnN = document.getElementById("totalUnN");
+
+            setValues();
+            function setValues() {
+              totalCountriesSpan.textContent = arrayMatching.length;
+              setPopulationTC();
+              function setPopulationTC() {
+                let populations = arrayMatching.map((e) => {
+                  let populationSpanValue =
+                    e.querySelector(".population span").textContent;
+
+                  if (populationSpanValue !== "undefined") {
+                    let num = Number.parseFloat(populationSpanValue).toFixed(2);
+
+                    if (populationSpanValue.includes("K")) {
+                      num *= 1000;
+                    } else if (populationSpanValue.includes("M")) {
+                      num *= 1000000;
+                    }
+                    return num;
+                  }
+                });
+
+                let populationTotal = populations.reduce((prev, curr) => {
+                  if (!curr) {
+                    return prev + 0;
+                  } else return prev + curr;
+                });
+                formatPopulation();
+                function formatPopulation() {
+                  if (populationTotal >= 1000 && populationTotal <= 999999) {
+                    populationTotal =
+                      Number.parseFloat(populationTotal / 1000).toFixed(2) +
+                      "K";
+                  }
+                  if (
+                    populationTotal >= 1000000 &&
+                    populationTotal < 1000000000
+                  ) {
+                    populationTotal =
+                      Number.parseFloat(populationTotal / 1000000).toFixed(2) +
+                      "M";
+                  }
+                  if (populationTotal >= 1000000000) {
+                    populationTotal =
+                      Number.parseFloat(populationTotal / 1000000000).toFixed(
+                        2
+                      ) + "B";
+                  }
+                  totalPopSpan.textContent = populationTotal;
+                }
+              }
+            }
           }
         } else {
           toogleErrorClassOn();
@@ -310,6 +417,7 @@ function generateAllCountries() {
           languageSelectTag.classList.add("emptyFields");
           populationMinTag.classList.add("emptyFields");
           populationMaxTag.classList.add("emptyFields");
+          // resetStatsDOM();
         }
       });
 
@@ -331,14 +439,11 @@ function generateAllCountries() {
         if (document.getElementsByClassName("empty")[0]) {
           let emptyBtn = document.getElementsByClassName("empty")[0];
           if (nameDiv.style.display == "none") {
-            console.log("YES");
             emptyBtn.classList.add("hideMe");
           } else {
-            console.log("NO");
             emptyBtn.classList.remove("hideMe");
           }
         }
-
         function styleAdd(element) {
           element.style.transition = "opacity 0.3s linear";
           if (element.style.display === "") {
@@ -364,6 +469,7 @@ function generateAllCountries() {
 
             empty.addEventListener("click", () => {
               emptyFieldsInForm();
+              resetStatsDOM();
               empty.remove();
             });
           }
@@ -464,6 +570,18 @@ function generateAllCountries() {
         } else return false;
       }
     }
+
+    function showStats() {
+      let statistics = document.getElementById("statistics");
+      statistics.classList.toggle("hidden");
+    }
+    function resetStatsDOM() {
+      let statistics = document.getElementById("statistics");
+      logo.classList.remove("logoStat");
+      logo.removeEventListener("click", showStats);
+      statistics.classList.add("hidden");
+    }
+
     function generateWarning() {
       if (!document.getElementById("warning")) {
         let warning = document.createElement("p");
@@ -474,6 +592,7 @@ function generateAllCountries() {
         let warning = document.getElementById("warning");
         warning.classList.remove("hidden");
       }
+      resetStatsDOM();
     }
     function createAllCountriesHTML() {
       return `
@@ -515,7 +634,6 @@ function generateAllCountries() {
     <div id="allCountriesContainer">
     </div>
     </div>
-
   `;
     }
   } else {
