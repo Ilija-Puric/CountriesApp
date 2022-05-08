@@ -312,7 +312,7 @@ function generateAllCountries() {
                   <ul id="langsStat">
                   </ul>
               </ul>
-              <ul>
+             <!-- <ul>
                   <p>Driving side</p>
                   <li>
                       <p class="stat">Left:<span id="totalDriveL"></span></p>
@@ -329,7 +329,7 @@ function generateAllCountries() {
                   <li>
                       <p class="stat">NO:<span id="totalUnN"></span></p>
                   </li>
-              </ul>
+              </ul> -->
               </div>`;
               allCountriesMainContainer.insertAdjacentHTML(
                 "beforebegin",
@@ -343,16 +343,27 @@ function generateAllCountries() {
             let totalCountriesSpan = document.getElementById("totalCountries");
             let totalPopSpan = document.getElementById("totalP");
             let totalLangSpan = document.getElementById("totalLanguagesSpoken");
-            let totalLangsUl = document.getElementById("langsStat");
-            let totalDriveL = document.getElementById("totalDriveL");
-            let totalDriveR = document.getElementById("totalDriveR");
-            let totalUnY = document.getElementById("totalUnY");
-            let totalUnN = document.getElementById("totalUnN");
+            // let totalLangsUl = document.getElementById("langsStat");
+            // let totalDriveL = document.getElementById("totalDriveL");
+            // let totalDriveR = document.getElementById("totalDriveR");
+            // let totalUnY = document.getElementById("totalUnY");
+            // let totalUnN = document.getElementById("totalUnN");
 
             setValues();
             function setValues() {
               totalCountriesSpan.textContent = arrayMatching.length;
               setPopulationTC();
+              setLangTC();
+              function setLangTC() {
+                //da nemam ugnjezdjene nizove
+                let langs = arrayMatching.flatMap((e) => {
+                  let langs = Array.from(e.querySelectorAll(".languages span"));
+                  let values = langs.map((e) => e.textContent);
+                  return values;
+                });
+                langs = new Set(langs);
+                totalLangSpan.textContent = langs.size;
+              }
               function setPopulationTC() {
                 let populations = arrayMatching.map((e) => {
                   let populationSpanValue =
