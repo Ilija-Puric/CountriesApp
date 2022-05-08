@@ -304,32 +304,35 @@ function generateAllCountries() {
             }
             function createStats() {
               let htmlText = ` <div id="statistics" class="hidden">
-              <h2>Matching criteria</h2>
-              <p class="stat">Total countries:<span id="totalCountries"></span></p>
-              <p class="stat">Total population:<span id="totalP"></span></p>
-              <ul>
-                  <p class="stat">Total languages:<span id="totalLanguagesSpoken"></span></p>
-                  <ul id="langsStat">
-                  </ul>
-              </ul>
-             <!-- <ul>
-                  <p>Driving side</p>
-                  <li>
-                      <p class="stat">Left:<span id="totalDriveL"></span></p>
-                  </li>
-                  <li>
-                      <p class="stat">Right:<span id="totalDriveR"></span></p>
-                  </li>
-              </ul>
-              <ul>
-                  <p>In UN:</p>
-                  <li>
-                      <p class="stat">YES:<span id="totalUnY"></span></p>
-                  </li>
-                  <li>
-                      <p class="stat">NO:<span id="totalUnN"></span></p>
-                  </li>
-              </ul> -->
+              <div class="scaleMe"></div>
+              <div id="statsInfo">
+                <h2>Matching criteria</h2>
+                <p class="stat">Total countries: <span id="totalCountries"></span></p>
+                <p class="stat">Total population: <span id="totalP"></span></p>
+                <ul>
+                    <p class="stat">Total languages: <span id="totalLanguagesSpoken"></span></p>
+                    <ul id="langsStat">
+                    </ul>
+                </ul>
+                             <!-- <ul>
+                    <p>Driving side</p>
+                    <li>
+                        <p class="stat">Left:<span id="totalDriveL"></span></p>
+                    </li>
+                    <li>
+                        <p class="stat">Right:<span id="totalDriveR"></span></p>
+                    </li>
+                </ul>
+                <ul>
+                    <p>In UN:</p>
+                    <li>
+                        <p class="stat">YES:<span id="totalUnY"></span></p>
+                    </li>
+                    <li>
+                        <p class="stat">NO:<span id="totalUnN"></span></p>
+                    </li>
+                </ul> -->
+              </div>
               </div>`;
               allCountriesMainContainer.insertAdjacentHTML(
                 "beforebegin",
@@ -428,7 +431,6 @@ function generateAllCountries() {
           languageSelectTag.classList.add("emptyFields");
           populationMinTag.classList.add("emptyFields");
           populationMaxTag.classList.add("emptyFields");
-          // resetStatsDOM();
         }
       });
 
@@ -584,7 +586,9 @@ function generateAllCountries() {
 
     function showStats() {
       let statistics = document.getElementById("statistics");
+      let scale = document.getElementsByClassName("scaleMe")[0];
       statistics.classList.toggle("hidden");
+      scale.classList.toggle("moveToSight");
     }
     function resetStatsDOM() {
       let statistics = document.getElementById("statistics");
