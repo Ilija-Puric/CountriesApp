@@ -293,17 +293,23 @@ function generateAllCountries() {
             ) {
               createStatsAndListeners();
             } else {
-              logo.classList.add("logoStat");
-              logo.addEventListener("click", showStats);
+              addClassesLogo();
+              logo.addEventListener("click", toggleStats);
             }
 
             function createStatsAndListeners() {
               createStats();
+              addClassesLogo();
+              logo.addEventListener("click", toggleStats);
+            }
+            function addClassesLogo() {
               logo.classList.add("logoStat");
-              logo.addEventListener("click", showStats);
+              setTimeout(() => {
+                logo.classList.add("wiggle");
+              }, 500);
             }
             function createStats() {
-              let htmlText = ` <div id="statistics" class="hidden">
+              let htmlText = ` <div id="statistics" class="moveDefault">
               <div class="scaleMe"></div>
               <div id="statsInfo">
                 <h2>Matching criteria</h2>
@@ -346,13 +352,9 @@ function generateAllCountries() {
             let totalCountriesSpan = document.getElementById("totalCountries");
             let totalPopSpan = document.getElementById("totalP");
             let totalLangSpan = document.getElementById("totalLanguagesSpoken");
-            // let totalLangsUl = document.getElementById("langsStat");
-            // let totalDriveL = document.getElementById("totalDriveL");
-            // let totalDriveR = document.getElementById("totalDriveR");
-            // let totalUnY = document.getElementById("totalUnY");
-            // let totalUnN = document.getElementById("totalUnN");
 
             setValues();
+            showStats();
             function setValues() {
               totalCountriesSpan.textContent = arrayMatching.length;
               setPopulationTC();
@@ -483,6 +485,8 @@ function generateAllCountries() {
             empty.addEventListener("click", () => {
               emptyFieldsInForm();
               resetStatsDOM();
+              if (document.getElementById("warning"))
+                warning.classList.add("hidden");
               empty.remove();
             });
           }
@@ -584,17 +588,24 @@ function generateAllCountries() {
       }
     }
 
+    function toggleStats() {
+      let statistics = document.getElementById("statistics");
+      statistics.classList.toggle("moveOutOfSight");
+      statistics.classList.toggle("moveToSight");
+    }
+
     function showStats() {
       let statistics = document.getElementById("statistics");
-      let scale = document.getElementsByClassName("scaleMe")[0];
-      statistics.classList.toggle("hidden");
-      scale.classList.toggle("moveToSight");
+      statistics.classList.remove("moveOutOfSight");
+      statistics.classList.add("moveToSight");
     }
     function resetStatsDOM() {
       let statistics = document.getElementById("statistics");
       logo.classList.remove("logoStat");
-      logo.removeEventListener("click", showStats);
-      statistics.classList.add("hidden");
+      logo.classList.remove("wiggle");
+      logo.removeEventListener("click", toggleStats);
+      statistics.classList.remove("moveToSight");
+      statistics.classList.add("moveOutOfSight");
     }
 
     function generateWarning() {
