@@ -69,6 +69,73 @@ main {
   width: 100%;
 }
 
+#fieldsetSort {
+  padding-top: 20px;
+  border: 0px;
+  border-top: 2px solid var(--white);
+
+  legend {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  #wrapperSort {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 100%;
+    height: 35px;
+    border-radius: 25px;
+    border: 2px solid var(--white);
+    background-color: var(--white);
+    padding-left: 10px;
+    max-width: 150px;
+  }
+
+  input[type="text"]:focus,
+  input[type="number"]:focus {
+    outline: 2px solid var(--black);
+  }
+
+  select:focus {
+    outline: 2px solid var(--black);
+  }
+  fieldset {
+    width: 80%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    gap: 20px;
+  }
+}
+
+#sorting,
+#filters {
+  width: 120px;
+  margin: 0 auto;
+  border-radius: 25px;
+  margin: 10px auto;
+  padding: 5px 0px;
+  background-color: var(--white);
+  color: var(--black);
+  font-size: 1.1rem;
+  border: 3px solid var(--white);
+}
+
+#sorting:hover,
+#filters:hover {
+  background-color: var(--lightGreen);
+  color: var(--white);
+  border: 3px solid var(--white);
+  cursor: pointer;
+  transition: background-color 0.5s ease-in-out;
+}
+
 #fieldsetFilters {
   padding-top: 20px;
   display: flex;
@@ -97,25 +164,6 @@ main {
   legend {
     text-align: center;
     margin: 0 auto;
-  }
-  #filters {
-    width: 120px;
-    margin: 0 auto;
-    border-radius: 25px;
-    margin: 10px auto;
-    padding: 5px 0px;
-    background-color: var(--white);
-    color: var(--black);
-    font-size: 1.1rem;
-    border: 3px solid var(--white);
-  }
-
-  #filters:hover {
-    background-color: var(--lightGreen);
-    color: var(--white);
-    border: 3px solid var(--white);
-    cursor: pointer;
-    transition: background-color 0.5s ease-in-out;
   }
 
   #wrapperFilters {
@@ -399,12 +447,15 @@ main {
     margin-top: 20px;
   }
 
-  #fieldsetFilters {
+  #fieldsetFilters,
+  #fieldsetSort {
     width: 50%;
     margin: 0 auto;
     select:focus {
       outline: 2px solid var(--black);
     }
+  }
+  #fieldsetFilters {
     div {
       max-width: 500px;
     }

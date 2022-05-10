@@ -52,12 +52,12 @@ function generateAllCountries() {
             Number.parseFloat(countryPop / 1000000000).toFixed(2) + "B";
         }
         let divHtml = `
-                <div class="country">
+                <div class="country" data-name="${country.name}" data-population="${countryPop}">
                 <img class="flagPrimary" src="${country.flag}" alt="no flag">
-                <p class="name">${country.name}</p>
+                <p class="name" >${country.name}</p>
                 <p class="capital">Capital: <span>${country.capital}</span></p>
                 <p class="continents">Continent: <span>${country.continent}</span></p>
-                <p class="population" data-population="${countryPop}">Population: <span>${populationTotal}</span></p>
+                <p class="population" >Population: <span>${populationTotal}</span></p>
                 <p class="languages">Languages:
                 `;
         for (const lang of Object.entries(country.languages)) {
@@ -376,8 +376,7 @@ function generateAllCountries() {
               }
               function setPopulationTC() {
                 let populations = arrayMatching.map((e) => {
-                  let populationData =
-                    e.querySelector(".population").dataset.population;
+                  let populationData = e.dataset.population;
                   if (populationData === "X") {
                     return 0;
                   } else {
@@ -432,6 +431,19 @@ function generateAllCountries() {
         }
       });
 
+      function styleAdd(element) {
+        element.style.transition = "opacity 0.2s linear";
+        if (element.style.display === "") {
+          element.style.opacity = "0";
+          element.style.display = "none";
+        } else {
+          element.style.display = "";
+          setTimeout(() => {
+            element.style.opacity = "1";
+          }, 100);
+        }
+      }
+
       let filters = [
         nameDiv,
         continentDiv,
@@ -455,17 +467,50 @@ function generateAllCountries() {
             emptyBtn.classList.remove("hideMe");
           }
         }
-        function styleAdd(element) {
-          element.style.transition = "opacity 0.3s linear";
-          if (element.style.display === "") {
-            element.style.opacity = "0";
-            element.style.display = "none";
-          } else {
-            element.style.display = "";
-            setTimeout(() => {
-              element.style.opacity = "1";
-            }, 100);
+      });
+
+      let sortBy = document.getElementById("sorting");
+      let sortSelectTag = document.getElementById("sortBySelect");
+      sortSelectTag.style.display = "none";
+      sortBy.addEventListener("click", () => {
+        styleAdd(sortSelectTag);
+      });
+
+      sortSelectTag.addEventListener("input", (e) => {
+        let sortByValue = sortSelectTag.value;
+        //sve drzave koje treba da se vide!
+        let countries = document.querySelectorAll(
+          ".country:not(.notMatchesName)"
+        );
+        let countryNames = Array.from(countries)
+          .map((e) => e.dataset.name)
+          .sort();
+
+        let countriesOrdered = [];
+        for (let i = 0; i < countryNames.length; i++) {
+          let elementToFind = countryNames[i];
+          countriesOrdered.push(
+            document.querySelector(`[data-name="${elementToFind}"]`)
+          );
+        }
+        containerCountries.innerHTML = "";
+        container.innerHTML = generateHtml();
+        function generateHtml() {
+          let html = "";
+          for (const str of countriesOrdered) {
+            html += str.outerHTML;
           }
+          return html;
+        }
+
+        if (sortByValue === "nameAsc") {
+          console.log("By name ASC");
+        } else if (sortByValue === "nameDesc") {
+          console.log("By name Desc");
+        } else if (sortByValue === "populationAsc") {
+          console.log("By popuation ASC");
+        } else if (sortByValue === "populationDesc") {
+          console.log("By population Desc");
         }
       });
 
@@ -655,6 +700,20 @@ function generateAllCountries() {
         </div>
       </fieldset>
     </form> 
+    <form id="formFilters">
+    <fieldset id="fieldsetSort">
+      <legend id="sorting">Sort by</legend>
+      <div id="wrapperSort">
+          <select name="sortBy" id="sortBySelect">
+          <option value="choose">Choose</option>
+          <option value="nameAsc">Name(Asc)</option>
+          <option value="nameDesc">Name(Desc)</option>
+          <option value="populationAsc">Population(Asc)</option>
+          <option value="populationDesc">Population(Desc)</option>
+          </select>
+      </div>
+    </fieldset>
+  </form> 
 
     <div id="allCountriesContainer">
     </div>
