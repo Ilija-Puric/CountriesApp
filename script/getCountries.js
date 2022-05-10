@@ -16,7 +16,7 @@ const getCountries = async function () {
           continent,
           currencies,
           languages,
-          borders,
+          // borders,
           side,
           un
         ) {
@@ -27,7 +27,6 @@ const getCountries = async function () {
           this.continent = continent;
           this.currencies = currencies;
           this.languages = languages;
-          this.borders = borders;
           this.unMember = un;
           this.drivingSide = side;
         }
@@ -41,7 +40,6 @@ const getCountries = async function () {
           country.continents[0],
           country?.currencies ? country.currencies : "X",
           country?.languages ? country.languages : "X",
-          country?.borders ? country.borders : "X",
           country?.car.side,
           country.unMember ? "YES" : "NO"
         );

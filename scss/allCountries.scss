@@ -118,6 +118,33 @@ main {
     transition: background-color 0.5s ease-in-out;
   }
 
+  #wrapperFilters {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-left: 40px;
+    // max-width: 300px;
+
+    fieldset {
+      // background-color: red;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      align-items: center;
+
+      div:not(.empty) {
+        width: 100%;
+        max-width: 250px;
+      }
+    }
+    div:not(.empty) {
+      display: flex;
+      justify-content: space-between;
+      width: 300px;
+      margin: 0 auto;
+    }
+  }
+
   input[type="text"],
   input[type="number"],
   select {
@@ -127,7 +154,7 @@ main {
     border: 2px solid var(--white);
     background-color: var(--white);
     padding-left: 10px;
-    max-width: 300px;
+    max-width: 150px;
   }
 
   input[type="text"]:focus,
@@ -150,6 +177,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center !important;
+  position: relative;
 }
 
 #find {
@@ -254,6 +282,8 @@ main {
 }
 
 .empty {
+  position: absolute;
+  right: 50px;
   width: 30px !important;
   height: 30px !important;
   background-color: var(--white);
@@ -283,6 +313,11 @@ main {
   transform: rotate(180deg);
   padding-bottom: 20px;
   padding-top: 0px !important;
+}
+
+.logoStatNone {
+  animation: 0.5s spinLogoBack;
+  transform: rotate(0deg);
 }
 
 .wiggle {
@@ -331,6 +366,18 @@ main {
 }
 
 @media screen and (min-width: 700px) {
+  input[type="text"],
+  input[type="number"],
+  select {
+    max-width: 300px !important;
+  }
+
+  #wrapperFilters {
+    div:not(.empty) {
+      width: 100% !important;
+      margin: auto !important;
+    }
+  }
   #allCountriesContainer {
     padding: 0 100px;
     margin-top: 30px;
@@ -380,5 +427,8 @@ main {
   .back:hover {
     transform: scale(1.2);
     cursor: pointer;
+  }
+  .empty {
+    right: 100px;
   }
 }

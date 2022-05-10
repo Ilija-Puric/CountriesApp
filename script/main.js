@@ -40,13 +40,16 @@ function generateAllCountries() {
     function createGrid() {
       for (const country of allCountries) {
         let populationTotal;
-        if (country.population >= 1000 && country.population <= 999999) {
+        let countryPop = country.population;
+        if (countryPop >= 1000 && countryPop <= 999999) {
           populationTotal =
-            Number.parseFloat(country.population / 1000).toFixed(2) + "K";
-        }
-        if (country.population >= 1000000) {
+            Number.parseFloat(countryPop / 1000).toFixed(2) + "K";
+        } else if (countryPop >= 1000000 && countryPop < 1000000000) {
           populationTotal =
-            Number.parseFloat(country.population / 1000000).toFixed(2) + "M";
+            Number.parseFloat(countryPop / 1000000).toFixed(2) + "M";
+        } else if (countryPop >= 1000000000) {
+          populationTotal =
+            Number.parseFloat(countryPop / 1000000000).toFixed(2) + "B";
         }
         let divHtml = `
                 <div class="country">
@@ -54,7 +57,7 @@ function generateAllCountries() {
                 <p class="name">${country.name}</p>
                 <p class="capital">Capital: <span>${country.capital}</span></p>
                 <p class="continents">Continent: <span>${country.continent}</span></p>
-                <p class="population">Population: <span>${populationTotal}</span></p>
+                <p class="population" data-population="${countryPop}">Population: <span>${populationTotal}</span></p>
                 <p class="languages">Languages:
                 `;
         for (const lang of Object.entries(country.languages)) {
@@ -80,12 +83,14 @@ function generateAllCountries() {
         });
       }
       let filter = document.getElementById("filters");
+      let filtersDiv = filter.nextElementSibling;
 
-      let nameDiv = filter.nextElementSibling;
-      let continentDiv = nameDiv.nextElementSibling;
-      let languageDiv = continentDiv.nextElementSibling;
-      let populationFieldset = languageDiv.nextElementSibling;
-      let findBtn = populationFieldset.nextElementSibling.children[0];
+      console.log(filtersDiv);
+      let nameDiv = filtersDiv.children[0];
+      let continentDiv = filtersDiv.children[1];
+      let languageDiv = filtersDiv.children[2];
+      let populationFieldset = filtersDiv.children[3];
+      let findBtn = filtersDiv.children[4].children[0];
 
       let name = nameDiv.children[1];
       let continentSelectTag = continentDiv.children[1];
@@ -163,7 +168,6 @@ function generateAllCountries() {
             arrayMatching = arrayMatching.length
               ? arrayMatching
               : [...countryDiv];
-            //[...countryDiv] jer je countryDiv HTMLCollection pa nece moci da rade Array metode na njega
             let result = checkIfMatchesContinent();
             if (!result) {
               return false;
@@ -303,6 +307,7 @@ function generateAllCountries() {
               logo.addEventListener("click", toggleStats);
             }
             function addClassesLogo() {
+              logo.classList.remove("logoStatNone");
               logo.classList.add("logoStat");
               setTimeout(() => {
                 logo.classList.add("wiggle");
@@ -371,26 +376,17 @@ function generateAllCountries() {
               }
               function setPopulationTC() {
                 let populations = arrayMatching.map((e) => {
-                  let populationSpanValue =
-                    e.querySelector(".population span").textContent;
-
-                  if (populationSpanValue !== "undefined") {
-                    let num = Number.parseFloat(populationSpanValue).toFixed(2);
-
-                    if (populationSpanValue.includes("K")) {
-                      num *= 1000;
-                    } else if (populationSpanValue.includes("M")) {
-                      num *= 1000000;
-                    }
-                    return num;
+                  let populationData =
+                    e.querySelector(".population").dataset.population;
+                  if (populationData === "X") {
+                    return 0;
+                  } else {
+                    return Number.parseInt(populationData);
                   }
                 });
-
-                let populationTotal = populations.reduce((prev, curr) => {
-                  if (!curr) {
-                    return prev + 0;
-                  } else return prev + curr;
-                });
+                let populationTotal = populations.reduce(
+                  (prev, curr) => prev + curr
+                );
                 formatPopulation();
                 function formatPopulation() {
                   if (populationTotal >= 1000 && populationTotal <= 999999) {
@@ -480,7 +476,7 @@ function generateAllCountries() {
             let empty = document.createElement("div");
             empty.className = "empty";
             empty.textContent = "X";
-            findBtn.insertAdjacentElement("afterend", empty);
+            findBtn.parentElement.append(empty);
 
             empty.addEventListener("click", () => {
               emptyFieldsInForm();
@@ -603,6 +599,7 @@ function generateAllCountries() {
       let statistics = document.getElementById("statistics");
       logo.classList.remove("logoStat");
       logo.classList.remove("wiggle");
+      logo.classList.add("logoStatNone");
       logo.removeEventListener("click", toggleStats);
       statistics.classList.remove("moveToSight");
       statistics.classList.add("moveOutOfSight");
@@ -626,34 +623,36 @@ function generateAllCountries() {
     <form id="formFilters">
       <fieldset id="fieldsetFilters">
         <legend id="filters">Filters</legend>
-        <div>
-          <label for="name">Name:</label>
-          <input type="text" id="name" name="name">
-        </div>
-        <div>
-          <label for="continent">Continent:</label>
-          <select name="continent" id="continent">
-          <option value="choose">Choose</option>
-          </select> 
-        </div>
-        <div>
-          <label for="language">Language:</label>
-          <select name="language" id="language">
-          <option value="choose">Choose</option>
-          </select> 
-        </div>
-        <fieldset>
-        <legend class="sublegend">Population:</legend>
+        <div id="wrapperFilters">
           <div>
-          <label for="populationMin">Min:</label>
-          <input min="0" type="number" id="populationMin" name="populationMin">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
           </div>
           <div>
-          <label for="populationMax">Max:</label>
-          <input min="0" type="number" id="populationMax" name="populationMax">
+            <label for="continent">Continent:</label>
+            <select name="continent" id="continent">
+            <option value="choose">Choose</option>
+            </select>
           </div>
-        </fieldset>
-        <div id="btnFindContainer"><button type="button" id="find">Find</button"></div>
+          <div>
+            <label for="language">Language:</label>
+            <select name="language" id="language">
+            <option value="choose">Choose</option>
+            </select>
+          </div>
+          <fieldset>
+          <legend class="sublegend">Population:</legend>
+            <div>
+            <label for="populationMin">Min:</label>
+            <input min="0" type="number" id="populationMin" name="populationMin">
+            </div>
+            <div>
+            <label for="populationMax">Max:</label>
+            <input min="0" type="number" id="populationMax" name="populationMax">
+            </div>
+          </fieldset>
+          <div id="btnFindContainer"><button type="button" id="find">Find</button"></div>
+        </div>
       </fieldset>
     </form> 
 
