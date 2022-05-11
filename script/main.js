@@ -502,6 +502,9 @@ function generateAllCountries() {
         populationFieldset,
         findBtn,
       ];
+
+      let filtersWrapper = document.getElementById("wrapperFilters");
+      let sortWrapper = document.getElementById("wrapperSort");
       //First load
       filters.forEach((element) => {
         element.style.display = "none";
@@ -510,6 +513,9 @@ function generateAllCountries() {
         filters.forEach((element) => {
           styleAdd(element);
         });
+
+        filtersWrapper.classList.toggle("glassEffect");
+
         if (document.getElementsByClassName("empty")[0]) {
           let emptyBtn = document.getElementsByClassName("empty")[0];
           if (nameDiv.style.display == "none") {
@@ -525,6 +531,7 @@ function generateAllCountries() {
       sortSelectTag.style.display = "none";
       sortBy.addEventListener("click", () => {
         styleAdd(sortSelectTag);
+        sortWrapper.classList.toggle("glassEffect");
       });
 
       createListenersForMore();

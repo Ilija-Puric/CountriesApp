@@ -35,7 +35,7 @@ main {
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: var(--lightGreen);
+  // background-color: var(--lightGreen);
   gap: 20px;
   transition: border-radius 1s ease-in-out;
 }
@@ -51,27 +51,20 @@ main {
   flex-direction: column;
   gap: 10px;
 
-  p {
-    font-size: 1.3rem;
-    padding: 0px;
-    transition: opacity 0.3s ease-in;
-    // color: var(--white);
-  }
   button {
     border: 4px solid var(--white);
     background-color: var(--white);
     border-radius: 30px;
     padding: 12px 15px;
-    box-shadow: rgb(27, 136, 54) 0px 20px 30px -10px;
-    transition: background-color 0.5s ease-in-out;
+    box-shadow: rgba(138, 141, 138, 0.849) 0px 20px 30px -10px;
+    transition: padding-left 0.5s ease-in-out;
     width: 150px;
     text-align: center;
   }
 
   button:hover {
-    background-color: var(--lightGreen) !important;
+    padding-left: 60px;
     cursor: pointer;
-    color: var(--white);
   }
 }
 
@@ -142,6 +135,7 @@ main {
   }
   p {
     font-size: 1.6rem;
+    color: var(--white);
   }
   > p {
     line-height: 3rem;

@@ -90,7 +90,6 @@ main {
     align-items: center;
     width: 200px;
     margin: 0 auto;
-    padding: 20px 30px;
   }
 
   input[type="text"],
@@ -143,21 +142,28 @@ main {
 input[type="text"],
 input[type="number"],
 select {
-  box-shadow: rgb(53, 136, 97) 0px 20px 20px -10px;
+  box-shadow: rgb(90, 92, 91) 0px 20px 20px -10px;
 }
 
 input[type="text"]:hover,
 input[type="number"]:hover,
 select:hover {
-  box-shadow: rgb(18, 83, 50) 0px 20px 20px -10px;
+  box-shadow: rgb(194, 197, 196) 0px 20px 20px -10px;
 }
 
 #wrapperSort,
 #wrapperFilters {
-  background-color: rgba(28, 204, 96, 0.527);
+  // box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+  //   rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+  //   rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
     rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
     rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.glassEffect {
+  background-color: rgba(77, 74, 74, 0.11);
+  padding: 30px 20px;
 }
 
 #sortBySelect:focus,
@@ -206,10 +212,10 @@ input[type="number"]:focus {
   }
 
   #wrapperFilters {
+    color: var(--white);
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 30px 25px;
     fieldset {
       display: flex;
       flex-direction: column;
@@ -267,11 +273,11 @@ input[type="number"]:focus {
   background-color: var(--white);
   max-width: 130px;
   text-align: center;
-  box-shadow: rgb(27, 136, 54) 0px 20px 30px -10px;
+  box-shadow: rgb(90, 92, 91) 0px 20px 20px -10px;
   transition: box-shadow 0.5s ease-in-out;
 }
 #find:hover {
-  box-shadow: rgb(18, 83, 50) 0px 20px 20px -10px;
+  box-shadow: rgba(169, 170, 169, 0.555) 0px 20px 20px -10px;
   cursor: pointer;
 }
 
@@ -357,7 +363,7 @@ input[type="number"]:focus {
   padding: 5px;
   position: absolute;
   bottom: 50px;
-  background-color: rgba(28, 204, 96, 0.527);
+  background-color: rgba(116, 117, 117, 0.32);
   box-shadow: rgba(0, 0, 0, 0.411) 0px 54px 55px,
     rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
     rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
@@ -434,8 +440,8 @@ input[type="number"]:focus {
 }
 .scaleMe {
   height: 35px;
-  background-color: var(--lightGreen);
   width: 40px;
+  background-color: var(--white);
 }
 
 .moveDefault {
