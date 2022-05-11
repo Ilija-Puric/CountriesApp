@@ -2,7 +2,6 @@
 document.getElementById("buttonAllCountries").disabled = true;
 
 const getCountries = async function () {
-  console.log("loading");
   let countries = await fetch("https://restcountries.com/v3.1/all");
   if (countries.status === 200) {
     let data = await countries.json();
@@ -16,7 +15,6 @@ const getCountries = async function () {
           continent,
           currencies,
           languages,
-          // borders,
           side,
           un
         ) {
@@ -47,9 +45,7 @@ const getCountries = async function () {
         localStorage.setItem(`${index}`, JSON.stringify(countryObj));
       }
 
-      console.log("done");
       document.getElementById("buttonAllCountries").disabled = false;
-
       return data;
     }
   } else {

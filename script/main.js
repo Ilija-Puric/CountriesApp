@@ -1,11 +1,18 @@
 const main = document.getElementsByTagName("main")[0];
 const mainContent = document.getElementById("mainContent");
 const buttonAllCountries = document.getElementById("buttonAllCountries");
-let logo = document.getElementById("logo");
+const logo = document.getElementById("logo");
 
 let allCountries = [];
 function generateAllCountries() {
   if (!document.getElementById("allCountriesMainContainer")) {
+    function loadTime() {
+      let spinner = document.createElement("div");
+      spinner.classList.add("spinner");
+      main.append(spinner);
+    }
+
+    loadTime();
     if (allCountries.length <= 250) {
       allCountries = [];
       let i = 0;
@@ -15,16 +22,74 @@ function generateAllCountries() {
       }
     }
 
-    loadTime();
+    function createAllCountriesHTML() {
+      return `
+    <div id="allCountriesMainContainer">
+    <form id="formFilters">
+      <fieldset id="fieldsetFilters">
+        <img src="images/filters.svg" alt="no filters" id="filters"/>
+        <div id="wrapperFilters">
+          <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+          </div>
+          <div>
+            <label for="continent">Continent:</label>
+            <select name="continent" id="continent">
+           <option value="choose" disabled selected>Choose</option>
+            </select>
+          </div>
+          <div>
+            <label for="language">Language:</label>
+            <select name="language" id="language">
+            <option value="choose" disabled selected>Choose</option>
+            </select>
+          </div>
+          <fieldset>
+          <legend class="sublegend">Population:</legend>
+            <div>
+            <label for="populationMin">Min:</label>
+            <input min="0" type="number" id="populationMin" name="populationMin">
+            </div>
+            <div>
+            <label for="populationMax">Max:</label>
+            <input min="0" type="number" id="populationMax" name="populationMax">
+            </div>
+          </fieldset>
+          <div id="btnFindContainer"><button type="button" id="find">Find</button"></div>
+        </div>
+      </fieldset>
+    </form> 
+    <form id="formSorts">
+    <fieldset id="fieldsetSort">
+    <img src="images/sort.svg" alt="no sort pic" id="sorting"/>
+      <div id="wrapperSort">
+          <select name="sortBy" id="sortBySelect">
+          <option value="" disabled selected>Choose</option>
+          <option value="nameAsc">Name(Asc)</option>
+          <option value="nameDesc">Name(Desc)</option>
+          <option value="populationAsc">Population(Asc)</option>
+          <option value="populationDesc">Population(Desc)</option>
+          </select>
+      </div>
+    </fieldset>
+  </form> 
+    <div id="allCountriesContainer">
+    </div>
+    </div>
+  `;
+    }
     let html = createAllCountriesHTML();
-
-    const styleForAllCountries = document.createElement("link");
-    styleForAllCountries.rel = "stylesheet";
-    styleForAllCountries.href = "style/allCountries.css";
-    document.head.append(styleForAllCountries);
-
     main.removeChild(mainContent);
     main.insertAdjacentHTML("beforeend", html);
+
+    function addNewStyle() {
+      const styleForAllCountries = document.createElement("link");
+      styleForAllCountries.rel = "stylesheet";
+      styleForAllCountries.href = "style/allCountries.css";
+      document.head.append(styleForAllCountries);
+    }
+    addNewStyle();
 
     const container = document.getElementById("allCountriesMainContainer");
     const containerCountries = document.getElementById("allCountriesContainer");
@@ -32,27 +97,23 @@ function generateAllCountries() {
 
     setTimeout(createGrid, 100);
 
-    function loadTime() {
-      let spinner = document.createElement("div");
-      spinner.classList.add("spinner");
-      main.append(spinner);
-    }
     function createGrid() {
-      for (const country of allCountries) {
-        let populationTotal;
-        let countryPop = country.population;
-        if (countryPop < 1000) populationTotal = countryPop;
-        else if (countryPop >= 1000 && countryPop <= 999999) {
-          populationTotal =
-            Number.parseFloat(countryPop / 1000).toFixed(2) + "K";
-        } else if (countryPop >= 1000000 && countryPop < 1000000000) {
-          populationTotal =
-            Number.parseFloat(countryPop / 1000000).toFixed(2) + "M";
-        } else if (countryPop >= 1000000000) {
-          populationTotal =
-            Number.parseFloat(countryPop / 1000000000).toFixed(2) + "B";
-        }
-        let divHtml = `
+      function appendCountriesHtml() {
+        for (const country of allCountries) {
+          let populationTotal;
+          let countryPop = country.population;
+          if (countryPop < 1000) populationTotal = countryPop;
+          else if (countryPop >= 1000 && countryPop <= 999999) {
+            populationTotal =
+              Number.parseFloat(countryPop / 1000).toFixed(2) + "K";
+          } else if (countryPop >= 1000000 && countryPop < 1000000000) {
+            populationTotal =
+              Number.parseFloat(countryPop / 1000000).toFixed(2) + "M";
+          } else if (countryPop >= 1000000000) {
+            populationTotal =
+              Number.parseFloat(countryPop / 1000000000).toFixed(2) + "B";
+          }
+          let divHtml = `
                 <div class="country" data-name="${country.name}" data-population="${countryPop}">
                 <img class="flagPrimary" src="${country.flag}" alt="no flag">
                 <p class="name" >${country.name}</p>
@@ -61,28 +122,35 @@ function generateAllCountries() {
                 <p class="population" >Population: <span>${populationTotal}</span></p>
                 <p class="languages">Languages:
                 `;
-        for (const lang of Object.entries(country.languages)) {
-          divHtml += `<span> ${lang[1]} </span>`;
-        }
-        divHtml += `</p>
+          for (const lang of Object.entries(country.languages)) {
+            divHtml += `<span> ${lang[1]} </span>`;
+          }
+          divHtml += `</p>
         <img class="more"src="images/more.svg" alt="no more pic">
         </div>      
         `;
-        containerCountries.innerHTML += divHtml;
+          containerCountries.innerHTML += divHtml;
+        }
       }
+      appendCountriesHtml();
       let images = document.getElementsByClassName("flagPrimary");
       let imageLoaded = [];
 
-      for (const img of images) {
-        img.addEventListener("load", () => {
-          imageLoaded.push(1);
-          if (imageLoaded.length === images.length) {
-            container.style.display = "";
-            container.classList.add("animationCountriesContainer");
-            main.removeChild(document.getElementsByClassName("spinner")[0]);
-          }
-        });
+      function addListenersForImages() {
+        for (const img of images) {
+          img.addEventListener("load", () => {
+            imageLoaded.push(1);
+            if (imageLoaded.length === images.length) {
+              container.style.display = "";
+              container.classList.add("animationCountriesContainer");
+              main.removeChild(document.getElementsByClassName("spinner")[0]);
+            }
+          });
+        }
       }
+
+      addListenersForImages();
+
       let filter = document.getElementById("filters");
       let filtersDiv = filter.nextElementSibling;
 
@@ -273,7 +341,6 @@ function generateAllCountries() {
               } else return true;
             }
           }
-
           if (!arrayMatching.length) {
             generateWarning();
           } else {
@@ -409,6 +476,9 @@ function generateAllCountries() {
           languageSelectTag.classList.add("emptyFields");
           populationMinTag.classList.add("emptyFields");
           populationMaxTag.classList.add("emptyFields");
+          setTimeout(() => {
+            toogleErrorClassOff();
+          }, 1500);
         }
       });
 
@@ -459,10 +529,10 @@ function generateAllCountries() {
 
       createListenersForMore();
       function createListenersForMore() {
-        let allmore = document.getElementsByClassName("more");
-        [...allmore].forEach((element) => {
+        let allMore = document.getElementsByClassName("more");
+        [...allMore].forEach((element) => {
           element.addEventListener("click", (e) => {
-            let clickedName = e.target.parentElement.children[1].textContent;
+            let clickedName = e.target.parentElement.dataset.name;
             allCountriesMainContainer.classList.add("moveOutRight");
 
             let country = allCountries.filter((element) => {
@@ -694,63 +764,6 @@ function generateAllCountries() {
         warning.classList.remove("hidden");
       }
       resetStatsDOM();
-    }
-    function createAllCountriesHTML() {
-      return `
-    <div id="allCountriesMainContainer">
-    <form id="formFilters">
-      <fieldset id="fieldsetFilters">
-        <legend id="filters">Filters</legend>
-        <div id="wrapperFilters">
-          <div>
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name">
-          </div>
-          <div>
-            <label for="continent">Continent:</label>
-            <select name="continent" id="continent">
-            <option value="choose">Choose</option>
-            </select>
-          </div>
-          <div>
-            <label for="language">Language:</label>
-            <select name="language" id="language">
-            <option value="choose">Choose</option>
-            </select>
-          </div>
-          <fieldset>
-          <legend class="sublegend">Population:</legend>
-            <div>
-            <label for="populationMin">Min:</label>
-            <input min="0" type="number" id="populationMin" name="populationMin">
-            </div>
-            <div>
-            <label for="populationMax">Max:</label>
-            <input min="0" type="number" id="populationMax" name="populationMax">
-            </div>
-          </fieldset>
-          <div id="btnFindContainer"><button type="button" id="find">Find</button"></div>
-        </div>
-      </fieldset>
-    </form> 
-    <form id="formFilters">
-    <fieldset id="fieldsetSort">
-      <legend id="sorting">Sort by</legend>
-      <div id="wrapperSort">
-          <select name="sortBy" id="sortBySelect">
-          <option value="choose">Choose</option>
-          <option value="nameAsc">Name(Asc)</option>
-          <option value="nameDesc">Name(Desc)</option>
-          <option value="populationAsc">Population(Asc)</option>
-          <option value="populationDesc">Population(Desc)</option>
-          </select>
-      </div>
-    </fieldset>
-  </form> 
-    <div id="allCountriesContainer">
-    </div>
-    </div>
-  `;
     }
   } else {
     return;

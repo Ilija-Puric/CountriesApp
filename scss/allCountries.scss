@@ -68,14 +68,16 @@ main {
 #allCountriesMainContainer {
   width: 100%;
 }
-form {
-  margin-top: 20px;
-}
 
 #fieldsetSort {
   padding-top: 20px;
   border: 0px;
-  border-top: 2px solid var(--white);
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 
   legend {
     text-align: center;
@@ -86,8 +88,9 @@ form {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 150px;
+    width: 200px;
     margin: 0 auto;
+    padding: 20px 30px;
   }
 
   input[type="text"],
@@ -102,14 +105,6 @@ form {
     max-width: 150px;
   }
 
-  input[type="text"]:focus,
-  input[type="number"]:focus {
-    outline: 2px solid var(--black);
-  }
-
-  select:focus {
-    outline: 2px solid var(--black);
-  }
   fieldset {
     width: 80%;
     display: flex;
@@ -121,24 +116,59 @@ form {
 
 #sorting,
 #filters {
-  width: 120px;
-  margin: 0 auto;
-  border-radius: 25px;
-  margin: 10px auto;
-  padding: 5px 0px;
-  background-color: var(--white);
-  color: var(--black);
-  font-size: 1.1rem;
+  height: 50px;
+  width: 100px;
+  padding: 4px 0px;
   border: 3px solid var(--white);
+  transition: background-color 0.5s linear;
+  transition: padding-left 0.5s linear;
+  box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset,
+    rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
+    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
+    rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
+    rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
 }
 
 #sorting:hover,
 #filters:hover {
-  background-color: var(--lightGreen);
-  color: var(--white);
-  border: 3px solid var(--white);
+  box-shadow: rgba(26, 170, 122, 0.17) 0px -23px 25px 0px inset,
+    rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
+    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
+    rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
+    rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  padding-left: 30px;
   cursor: pointer;
-  transition: background-color 0.5s ease-in-out;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  box-shadow: rgb(53, 136, 97) 0px 20px 20px -10px;
+}
+
+input[type="text"]:hover,
+input[type="number"]:hover,
+select:hover {
+  box-shadow: rgb(18, 83, 50) 0px 20px 20px -10px;
+}
+
+#wrapperSort,
+#wrapperFilters {
+  background-color: rgba(28, 204, 96, 0.527);
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+#sortBySelect:focus,
+select:focus,
+input[type="text"]:focus,
+input[type="number"]:focus {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
+  outline: 0px;
 }
 
 #fieldsetFilters {
@@ -148,7 +178,6 @@ form {
   justify-content: space-evenly;
   align-items: center;
   border: 0px;
-  border-top: 2px solid var(--white);
   gap: 20px;
 
   fieldset {
@@ -169,17 +198,19 @@ form {
   legend {
     text-align: center;
     margin: 0 auto;
+    padding-bottom: 10px;
+  }
+
+  #sortBySelect {
+    width: 90%;
   }
 
   #wrapperFilters {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding-left: 40px;
-    // max-width: 300px;
-
+    padding: 30px 25px;
     fieldset {
-      // background-color: red;
       display: flex;
       flex-direction: column;
       width: 100%;
@@ -198,6 +229,9 @@ form {
     }
   }
 
+  #populationMin {
+    margin-left: 3px;
+  }
   input[type="text"],
   input[type="number"],
   select {
@@ -210,14 +244,6 @@ form {
     max-width: 150px;
   }
 
-  input[type="text"]:focus,
-  input[type="number"]:focus {
-    outline: 2px solid var(--black);
-  }
-
-  select:focus {
-    outline: 2px solid var(--black);
-  }
   fieldset {
     width: 80%;
     display: flex;
@@ -241,12 +267,11 @@ form {
   background-color: var(--white);
   max-width: 130px;
   text-align: center;
-  transition: background-color 0.5s ease-in-out;
+  box-shadow: rgb(27, 136, 54) 0px 20px 30px -10px;
+  transition: box-shadow 0.5s ease-in-out;
 }
 #find:hover {
-  background-color: var(--black);
-  border: 3px solid var(--black);
-  color: var(--white);
+  box-shadow: rgb(18, 83, 50) 0px 20px 20px -10px;
   cursor: pointer;
 }
 
@@ -271,10 +296,8 @@ form {
   animation: blink 0.5s both;
 }
 
-//ulepsavaj kasnije
 .emptyFields {
-  outline: 2px solid var(--red);
-  transition: outline 0.5s ease-in-out;
+  animation: wrongInput 1.25s forwards;
 }
 
 .more {
@@ -305,9 +328,12 @@ form {
   align-items: flex-start;
   padding-bottom: 20px;
   position: absolute;
-  top: 130px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   opacity: 1;
   gap: 10px;
+  box-shadow: rgba(22, 73, 41, 0.56) 0px 22px 70px 4px;
   transition: all 0.5s ease-in-out;
 
   > p:nth-child(2) {
@@ -331,6 +357,11 @@ form {
   padding: 5px;
   position: absolute;
   bottom: 50px;
+  background-color: rgba(28, 204, 96, 0.527);
+  box-shadow: rgba(0, 0, 0, 0.411) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  border-radius: 50%;
   transition: 0.4s transform ease-in-out;
 }
 
@@ -442,23 +473,23 @@ form {
     border-radius: 50px;
     padding: 0 50px;
     grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    padding-bottom: 200px;
     div {
       width: 100%;
       height: 400px;
     }
   }
-  #formFilters {
+  #formFilters,
+  #formSorts {
     width: 100%;
+  }
+  #formFilters {
     margin-top: 20px;
   }
-
   #fieldsetFilters,
   #fieldsetSort {
     width: 50%;
     margin: 0 auto;
-    select:focus {
-      outline: 2px solid var(--black);
-    }
   }
   #fieldsetFilters {
     div {
