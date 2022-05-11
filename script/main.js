@@ -41,7 +41,8 @@ function generateAllCountries() {
       for (const country of allCountries) {
         let populationTotal;
         let countryPop = country.population;
-        if (countryPop >= 1000 && countryPop <= 999999) {
+        if (countryPop < 1000) populationTotal = countryPop;
+        else if (countryPop >= 1000 && countryPop <= 999999) {
           populationTotal =
             Number.parseFloat(countryPop / 1000).toFixed(2) + "K";
         } else if (countryPop >= 1000000 && countryPop < 1000000000) {
@@ -85,7 +86,6 @@ function generateAllCountries() {
       let filter = document.getElementById("filters");
       let filtersDiv = filter.nextElementSibling;
 
-      console.log(filtersDiv);
       let nameDiv = filtersDiv.children[0];
       let continentDiv = filtersDiv.children[1];
       let languageDiv = filtersDiv.children[2];
@@ -232,14 +232,7 @@ function generateAllCountries() {
             }
             function checkIfMatchesMin() {
               arrayMatching = [...arrayMatching].filter((e) => {
-                let populationSpanValue =
-                  e.querySelector(".population span").textContent;
-                let num = Number.parseFloat(populationSpanValue).toFixed(2);
-                if (populationSpanValue.includes("K")) {
-                  num *= 1000;
-                } else if (populationSpanValue.includes("M")) {
-                  num *= 1000000;
-                }
+                let num = e.dataset.population;
                 if (populationMin <= num) {
                   arrayMatching.push(e);
                   e.classList.remove("notMatchesName");
@@ -265,14 +258,7 @@ function generateAllCountries() {
             }
             function checkIfMatchesMax() {
               arrayMatching = [...arrayMatching].filter((e) => {
-                let populationSpanValue =
-                  e.querySelector(".population span").textContent;
-                let num = Number.parseFloat(populationSpanValue).toFixed(2);
-                if (populationSpanValue.includes("K")) {
-                  num *= 1000;
-                } else if (populationSpanValue.includes("M")) {
-                  num *= 1000000;
-                }
+                let num = e.dataset.population;
                 if (num <= populationMax) {
                   arrayMatching.push(e);
                   e.classList.remove("notMatchesName");
@@ -375,14 +361,9 @@ function generateAllCountries() {
                 totalLangSpan.textContent = langs.size;
               }
               function setPopulationTC() {
-                let populations = arrayMatching.map((e) => {
-                  let populationData = e.dataset.population;
-                  if (populationData === "X") {
-                    return 0;
-                  } else {
-                    return Number.parseInt(populationData);
-                  }
-                });
+                let populations = arrayMatching.map((e) =>
+                  Number.parseInt(e.dataset.population)
+                );
                 let populationTotal = populations.reduce(
                   (prev, curr) => prev + curr
                 );
@@ -476,64 +457,6 @@ function generateAllCountries() {
         styleAdd(sortSelectTag);
       });
 
-      sortSelectTag.addEventListener("input", (e) => {
-        let sortByValue = sortSelectTag.value;
-        //sve drzave koje treba da se vide!
-        let countries = document.querySelectorAll(
-          ".country:not(.notMatchesName)"
-        );
-        let countryNames = Array.from(countries)
-          .map((e) => e.dataset.name)
-          .sort();
-
-        let countriesOrdered = [];
-        for (let i = 0; i < countryNames.length; i++) {
-          let elementToFind = countryNames[i];
-          countriesOrdered.push(
-            document.querySelector(`[data-name="${elementToFind}"]`)
-          );
-        }
-        containerCountries.innerHTML = "";
-        container.innerHTML = generateHtml();
-        function generateHtml() {
-          let html = "";
-          for (const str of countriesOrdered) {
-            html += str.outerHTML;
-          }
-          return html;
-        }
-
-        if (sortByValue === "nameAsc") {
-          console.log("By name ASC");
-        } else if (sortByValue === "nameDesc") {
-          console.log("By name Desc");
-        } else if (sortByValue === "populationAsc") {
-          console.log("By popuation ASC");
-        } else if (sortByValue === "populationDesc") {
-          console.log("By population Desc");
-        }
-      });
-
-      const fieldsetForm = document.getElementById("fieldsetFilters");
-      fieldsetForm.addEventListener("input", () => {
-        if (canProcede()) {
-          if (!document.getElementsByClassName("empty")[0]) {
-            let empty = document.createElement("div");
-            empty.className = "empty";
-            empty.textContent = "X";
-            findBtn.parentElement.append(empty);
-
-            empty.addEventListener("click", () => {
-              emptyFieldsInForm();
-              resetStatsDOM();
-              if (document.getElementById("warning"))
-                warning.classList.add("hidden");
-              empty.remove();
-            });
-          }
-        } else document.getElementsByClassName("empty")[0].remove();
-      });
-
       createListenersForMore();
       function createListenersForMore() {
         let allmore = document.getElementsByClassName("more");
@@ -604,6 +527,116 @@ function generateAllCountries() {
           });
         });
       }
+
+      sortSelectTag.addEventListener("input", (e) => {
+        let sortByValue = sortSelectTag.value;
+        let countries = document.querySelectorAll(".country");
+
+        function sortByName(direction = "asc") {
+          let countryNames;
+          if (direction === "asc") {
+            countryNames = Array.from(countries)
+              .map((e) => e.dataset.name)
+              .sort();
+          } else if (direction === "desc") {
+            countryNames = Array.from(countries)
+              .map((e) => e.dataset.name)
+              .sort((a, b) => {
+                if (a > b) return -1;
+                if (b > a) return 1;
+              });
+          }
+
+          let countriesOrdered = [];
+
+          for (let i = 0; i < countryNames.length; i++) {
+            let elementToFind = countryNames[i];
+            countriesOrdered.push(
+              document.querySelector(`[data-name="${elementToFind}"]`)
+            );
+          }
+          containerCountries.innerHTML = "";
+          containerCountries.innerHTML = generateHtml();
+          function generateHtml() {
+            let html = "";
+            for (const str of countriesOrdered) {
+              html += str.outerHTML;
+            }
+            return html;
+          }
+        }
+        //ovde sam
+        function sortByPopulation(direction = "asc") {
+          let countryPopulations;
+          if (direction === "asc") {
+            countryPopulations = Array.from(countries)
+              .map((e) => Number.parseInt(e.dataset.population) || 0)
+              .sort((a, b) => {
+                if (a > b) return 1;
+                if (b > a) return -1;
+              });
+          } else if (direction === "desc") {
+            countryPopulations = Array.from(countries)
+              .map((e) => Number.parseInt(e.dataset.population) || 0)
+              .sort((a, b) => {
+                if (a > b) return -1;
+                if (b > a) return 1;
+              });
+          }
+          let countriesOrdered = [];
+
+          for (let i = 0; i < countryPopulations.length; i++) {
+            let elementToFind = countryPopulations[i];
+            countriesOrdered.push(
+              document.querySelector(`[data-population="${elementToFind}"]`)
+            );
+          }
+          containerCountries.innerHTML = "";
+          containerCountries.innerHTML = generateHtml();
+          function generateHtml() {
+            let html = "";
+            for (const str of countriesOrdered) {
+              html += str.outerHTML;
+            }
+            return html;
+          }
+        }
+        switch (sortByValue) {
+          case "nameAsc":
+            sortByName();
+            break;
+          case "nameDesc":
+            sortByName("desc");
+            break;
+          case "populationAsc":
+            sortByPopulation();
+            break;
+          case "populationDesc":
+            sortByPopulation("desc");
+            break;
+        }
+        createListenersForMore();
+      });
+
+      const fieldsetForm = document.getElementById("fieldsetFilters");
+      fieldsetForm.addEventListener("input", () => {
+        if (canProcede()) {
+          if (!document.getElementsByClassName("empty")[0]) {
+            let empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = "X";
+            findBtn.parentElement.append(empty);
+
+            empty.addEventListener("click", () => {
+              emptyFieldsInForm();
+              resetStatsDOM();
+              if (document.getElementById("warning"))
+                warning.classList.add("hidden");
+              empty.remove();
+            });
+          }
+        } else document.getElementsByClassName("empty")[0].remove();
+      });
 
       function emptyFieldsInForm() {
         name.value = "";
@@ -714,7 +747,6 @@ function generateAllCountries() {
       </div>
     </fieldset>
   </form> 
-
     <div id="allCountriesContainer">
     </div>
     </div>

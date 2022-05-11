@@ -35,7 +35,7 @@ const getCountries = async function () {
         const countryObj = new Country(
           country.name.common,
           country?.capital ? country.capital[0] : "X",
-          country?.population ? country.population : "X",
+          country?.population ? country.population : 0,
           country.flags.svg,
           country.continents[0],
           country?.currencies ? country.currencies : "X",
