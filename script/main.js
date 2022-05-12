@@ -3,7 +3,38 @@ const mainContent = document.getElementById("mainContent");
 const buttonAllCountries = document.getElementById("buttonAllCountries");
 const logo = document.getElementById("logo");
 
-let allCountries = [];
+console.log("second js");
+let query = location.search;
+if (query) {
+  console.log("ima");
+  let pairs = new URLSearchParams(query);
+  let parameters = new Map();
+
+  if (pairs.has("name")) {
+    parameters.set("name", pairs.get("name"));
+  }
+  if (pairs.has("continent")) {
+    parameters.set("continent", pairs.get("continent"));
+  }
+  if (pairs.has("language")) {
+    parameters.set("language", pairs.get("language"));
+  }
+  if (pairs.has("min")) {
+    parameters.set("min", pairs.get("min"));
+  }
+  if (pairs.has("max")) {
+    parameters.set("max", pairs.get("max"));
+  }
+
+  // let time = 500;
+  // if (typeof Storage !== "undefined") {
+  //   setTimeout(generateAllCountries, 2000);
+  // } else {
+  //   // setTimeout(generateAllCountries, 100);
+  //   generateAllCountries();
+  // }
+}
+
 function generateAllCountries() {
   if (!document.getElementById("allCountriesMainContainer")) {
     function loadTime() {
@@ -11,17 +42,7 @@ function generateAllCountries() {
       spinner.classList.add("spinner");
       main.append(spinner);
     }
-
     loadTime();
-    if (allCountries.length <= 250) {
-      allCountries = [];
-      let i = 0;
-      while (i < 250) {
-        allCountries.push(JSON.parse(localStorage.getItem(i)));
-        i++;
-      }
-    }
-
     function createAllCountriesHTML() {
       return `
     <div id="allCountriesMainContainer">
@@ -36,13 +57,13 @@ function generateAllCountries() {
           <div>
             <label for="continent">Continent:</label>
             <select name="continent" id="continent">
-           <option value="choose" disabled selected>Choose</option>
+            <option value="choose" selected>Choose</option>
             </select>
           </div>
           <div>
             <label for="language">Language:</label>
             <select name="language" id="language">
-            <option value="choose" disabled selected>Choose</option>
+            <option value="choose" selected>Choose</option>
             </select>
           </div>
           <fieldset>
@@ -344,6 +365,7 @@ function generateAllCountries() {
           if (!arrayMatching.length) {
             generateWarning();
           } else {
+            filter.click();
             if (
               !logo.classList.contains("logoStat") &&
               !document.getElementById("statistics")
@@ -464,18 +486,11 @@ function generateAllCountries() {
           toogleErrorClassOn();
         }
         function toogleErrorClassOff() {
-          name.classList.remove("emptyFields");
-          continentSelectTag.classList.remove("emptyFields");
-          languageSelectTag.classList.remove("emptyFields");
-          populationMinTag.classList.remove("emptyFields");
-          populationMaxTag.classList.remove("emptyFields");
+          findBtn.classList.remove("emptyFields");
         }
         function toogleErrorClassOn() {
-          name.classList.add("emptyFields");
-          continentSelectTag.classList.add("emptyFields");
-          languageSelectTag.classList.add("emptyFields");
-          populationMinTag.classList.add("emptyFields");
-          populationMaxTag.classList.add("emptyFields");
+          findBtn.classList.add("emptyFields");
+
           setTimeout(() => {
             toogleErrorClassOff();
           }, 1500);
@@ -642,7 +657,6 @@ function generateAllCountries() {
             return html;
           }
         }
-        //ovde sam
         function sortByPopulation(direction = "asc") {
           let countryPopulations;
           if (direction === "asc") {
@@ -692,6 +706,8 @@ function generateAllCountries() {
             sortByPopulation("desc");
             break;
         }
+        //Zbog UX
+        sortBy.click();
         createListenersForMore();
       });
 
@@ -709,10 +725,14 @@ function generateAllCountries() {
               resetStatsDOM();
               if (document.getElementById("warning"))
                 warning.classList.add("hidden");
+
+              //Zatvara filters
+              filter.click();
               empty.remove();
             });
           }
-        } else document.getElementsByClassName("empty")[0].remove();
+        } else if (document.getElementsByClassName("empty")[0])
+          document.getElementsByClassName("empty")[0].remove();
       });
 
       function emptyFieldsInForm() {
@@ -728,11 +748,13 @@ function generateAllCountries() {
 
       function canProcede() {
         if (
-          name.value !== "" ||
+          (name.value !== "" && !Number.parseInt(name.value)) ||
           continentSelectTag.value !== "Choose".toLowerCase() ||
           languageSelectTag.value !== "Choose".toLowerCase() ||
-          populationMinTag.value !== "" ||
-          populationMaxTag.value !== ""
+          (populationMinTag.value !== "" &&
+            Number.parseInt(populationMin.value) > 0) ||
+          (populationMaxTag.value !== "" &&
+            Number.parseInt(populationMax.value) > 0)
         ) {
           return true;
         } else return false;
@@ -756,8 +778,11 @@ function generateAllCountries() {
       logo.classList.remove("wiggle");
       logo.classList.add("logoStatNone");
       logo.removeEventListener("click", toggleStats);
-      statistics.classList.remove("moveToSight");
-      statistics.classList.add("moveOutOfSight");
+
+      if (statistics) {
+        statistics.classList.remove("moveToSight");
+        statistics.classList.add("moveOutOfSight");
+      }
     }
 
     function generateWarning() {

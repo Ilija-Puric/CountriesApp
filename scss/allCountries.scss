@@ -2,7 +2,7 @@
 
 #allCountriesContainer {
   width: 100%;
-  height: 62.1vh;
+  height: 62vh;
   overflow-y: scroll;
   display: grid;
   gap: 20px;
@@ -474,14 +474,13 @@ input[type="number"]:focus {
     padding: 0 100px;
     margin-top: 30px;
     width: 100%;
-    height: 70vh;
     overflow-y: scroll;
     display: grid;
     gap: 20px;
     border-radius: 50px;
     padding: 0 50px;
     grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-    padding-bottom: 200px;
+    padding-bottom: 50px;
     div {
       width: 100%;
       height: 400px;

@@ -1,6 +1,7 @@
 //Da ne moze da se pokrene dokle god nisu ucitani podaci iz fetcha
 document.getElementById("buttonAllCountries").disabled = true;
 
+let allCountries = [];
 const getCountries = async function () {
   let countries = await fetch("https://restcountries.com/v3.1/all");
   if (countries.status === 200) {
@@ -41,12 +42,11 @@ const getCountries = async function () {
           country?.car.side,
           country.unMember ? "YES" : "NO"
         );
-
+        allCountries.push(countryObj);
         localStorage.setItem(`${index}`, JSON.stringify(countryObj));
       }
-
       document.getElementById("buttonAllCountries").disabled = false;
-      return data;
+      return;
     }
   } else {
     return new Error(`Error loading resourse,status code:${countries.status}`);
@@ -54,5 +54,10 @@ const getCountries = async function () {
 };
 
 if (localStorage.getItem(0) && localStorage.getItem(249)) {
+  let i = 0;
+  while (i < 250) {
+    allCountries.push(JSON.parse(localStorage.getItem(i)));
+    i++;
+  }
   document.getElementById("buttonAllCountries").disabled = false;
 } else getCountries();
