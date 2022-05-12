@@ -630,6 +630,14 @@ function generateAllCountries(search) {
             }
             return html;
           }
+
+          //Bug, dupliranje Cvora. Zato ga naknadno brisem
+          if (
+            containerCountries.children[0].dataset.name ==
+            containerCountries.children[1].dataset.name
+          ) {
+            containerCountries.children[1].remove();
+          }
         }
         switch (sortByValue) {
           case "nameAsc":
@@ -684,19 +692,40 @@ function generateAllCountries(search) {
           country.classList.remove("notMatchesName");
         }
       }
-
       function canProcede() {
+        let errors = 0;
+        function isNumeric(value) {
+          return /^-?\d+$/.test(value);
+        }
         if (
-          (name.value !== "" && !Number.parseInt(name.value)) ||
+          name.value !== "" ||
+          populationMinTag.value !== "" ||
+          populationMaxTag.value !== ""
+        ) {
+          if (isNumeric(name.value) || name.value.includes("-")) {
+            errors++;
+          }
+          if (
+            isNumeric(populationMin.value) &&
+            Number.parseInt(populationMin.value) < 0
+          ) {
+            errors++;
+          }
+          if (
+            isNumeric(populationMaxTag.value) &&
+            Number.parseInt(populationMaxTag.value) < 0
+          ) {
+            errors++;
+          }
+        } else if (
           continentSelectTag.value !== "Choose".toLowerCase() ||
-          languageSelectTag.value !== "Choose".toLowerCase() ||
-          (populationMinTag.value !== "" &&
-            Number.parseInt(populationMin.value) > 0) ||
-          (populationMaxTag.value !== "" &&
-            Number.parseInt(populationMax.value) > 0)
+          languageSelectTag.value !== "Choose".toLowerCase()
         ) {
           return true;
-        } else return false;
+        }
+
+        if (errors) return false;
+        else return true;
       }
     }
 
