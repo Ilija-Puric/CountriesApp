@@ -1,122 +1,94 @@
-const main = document.getElementsByTagName("main")[0];
-const mainContent = document.getElementById("mainContent");
-const buttonAllCountries = document.getElementById("buttonAllCountries");
-const logo = document.getElementById("logo");
+buttonAllCountries.addEventListener("click", generateAllCountries);
 
-console.log("second js");
-let query = location.search;
-if (query) {
-  console.log("ima");
-  let pairs = new URLSearchParams(query);
-  let parameters = new Map();
-
-  if (pairs.has("name")) {
-    parameters.set("name", pairs.get("name"));
-  }
-  if (pairs.has("continent")) {
-    parameters.set("continent", pairs.get("continent"));
-  }
-  if (pairs.has("language")) {
-    parameters.set("language", pairs.get("language"));
-  }
-  if (pairs.has("min")) {
-    parameters.set("min", pairs.get("min"));
-  }
-  if (pairs.has("max")) {
-    parameters.set("max", pairs.get("max"));
-  }
-
-  // let time = 500;
-  // if (typeof Storage !== "undefined") {
-  //   setTimeout(generateAllCountries, 2000);
-  // } else {
-  //   // setTimeout(generateAllCountries, 100);
-  //   generateAllCountries();
-  // }
+function loadTime() {
+  let spinner = document.createElement("div");
+  spinner.classList.add("spinner");
+  main.append(spinner);
 }
-
-function generateAllCountries() {
-  if (!document.getElementById("allCountriesMainContainer")) {
-    function loadTime() {
-      let spinner = document.createElement("div");
-      spinner.classList.add("spinner");
-      main.append(spinner);
-    }
-    loadTime();
-    function createAllCountriesHTML() {
-      return `
-    <div id="allCountriesMainContainer">
-    <form id="formFilters">
-      <fieldset id="fieldsetFilters">
-        <img src="images/filters.svg" alt="no filters" id="filters"/>
-        <div id="wrapperFilters">
-          <div>
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name">
-          </div>
-          <div>
-            <label for="continent">Continent:</label>
-            <select name="continent" id="continent">
-            <option value="choose" selected>Choose</option>
-            </select>
-          </div>
-          <div>
-            <label for="language">Language:</label>
-            <select name="language" id="language">
-            <option value="choose" selected>Choose</option>
-            </select>
-          </div>
-          <fieldset>
-          <legend class="sublegend">Population:</legend>
-            <div>
-            <label for="populationMin">Min:</label>
-            <input min="0" type="number" id="populationMin" name="populationMin">
-            </div>
-            <div>
-            <label for="populationMax">Max:</label>
-            <input min="0" type="number" id="populationMax" name="populationMax">
-            </div>
-          </fieldset>
-          <div id="btnFindContainer"><button type="button" id="find">Find</button"></div>
+function createAllCountriesHTML() {
+  return `
+<div id="allCountriesMainContainer">
+<form id="formFilters">
+  <fieldset id="fieldsetFilters">
+    <img src="images/filters.svg" alt="no filters" id="filters"/>
+    <div id="wrapperFilters">
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+      </div>
+      <div>
+        <label for="continent">Continent:</label>
+        <select name="continent" id="continent">
+        <option value="choose" selected>Choose</option>
+        </select>
+      </div>
+      <div>
+        <label for="language">Language:</label>
+        <select name="language" id="language">
+        <option value="choose" selected>Choose</option>
+        </select>
+      </div>
+      <fieldset>
+      <legend class="sublegend">Population:</legend>
+        <div>
+        <label for="populationMin">Min:</label>
+        <input min="0" type="number" id="populationMin" name="populationMin">
+        </div>
+        <div>
+        <label for="populationMax">Max:</label>
+        <input min="0" type="number" id="populationMax" name="populationMax">
         </div>
       </fieldset>
-    </form> 
-    <form id="formSorts">
-    <fieldset id="fieldsetSort">
-    <img src="images/sort.svg" alt="no sort pic" id="sorting"/>
-      <div id="wrapperSort">
-          <select name="sortBy" id="sortBySelect">
-          <option value="" disabled selected>Choose</option>
-          <option value="nameAsc">Name(Asc)</option>
-          <option value="nameDesc">Name(Desc)</option>
-          <option value="populationAsc">Population(Asc)</option>
-          <option value="populationDesc">Population(Desc)</option>
-          </select>
-      </div>
-    </fieldset>
-  </form> 
-    <div id="allCountriesContainer">
+      <div id="btnFindContainer"><button type="button" id="find">Find</button"></div>
     </div>
-    </div>
-  `;
-    }
+  </fieldset>
+</form>
+<form id="formSorts">
+<fieldset id="fieldsetSort">
+<img src="images/sort.svg" alt="no sort pic" id="sorting"/>
+  <div id="wrapperSort">
+      <select name="sortBy" id="sortBySelect">
+      <option value="" disabled selected>Choose</option>
+      <option value="nameAsc">Name(Asc)</option>
+      <option value="nameDesc">Name(Desc)</option>
+      <option value="populationAsc">Population(Asc)</option>
+      <option value="populationDesc">Population(Desc)</option>
+      </select>
+  </div>
+</fieldset>
+</form>
+<div id="allCountriesContainer">
+</div>
+</div>
+`;
+}
+function addNewStyle() {
+  const styleForAllCountries = document.createElement("link");
+  styleForAllCountries.rel = "stylesheet";
+  styleForAllCountries.href = "style/allCountries.css";
+  document.head.append(styleForAllCountries);
+}
+
+function generateAllCountries(search) {
+  if (!document.getElementById("allCountriesMainContainer")) {
+    loadTime();
+
     let html = createAllCountriesHTML();
-    main.removeChild(mainContent);
+
+    if (document.getElementById("buttonAllCountries"))
+      main.removeChild(mainContent);
     main.insertAdjacentHTML("beforeend", html);
 
-    function addNewStyle() {
-      const styleForAllCountries = document.createElement("link");
-      styleForAllCountries.rel = "stylesheet";
-      styleForAllCountries.href = "style/allCountries.css";
-      document.head.append(styleForAllCountries);
-    }
     addNewStyle();
 
     const container = document.getElementById("allCountriesMainContainer");
     const containerCountries = document.getElementById("allCountriesContainer");
     container.style.display = "none";
 
-    setTimeout(createGrid, 100);
+    setTimeout(() => {
+      createGrid();
+      createMechanism();
+    }, 100);
 
     function createGrid() {
       function appendCountriesHtml() {
@@ -134,8 +106,14 @@ function generateAllCountries() {
             populationTotal =
               Number.parseFloat(countryPop / 1000000000).toFixed(2) + "B";
           }
+
+          let languages = [];
+          for (const lang of Object.entries(country.languages)) {
+            languages.push(lang[1]);
+          }
+
           let divHtml = `
-                <div class="country" data-name="${country.name}" data-population="${countryPop}">
+                <div class="country" data-name="${country.name}" data-population="${countryPop}" data-continent="${country.continent}" data-languages="${languages}">
                 <img class="flagPrimary" src="${country.flag}" alt="no flag">
                 <p class="name" >${country.name}</p>
                 <p class="capital">Capital: <span>${country.capital}</span></p>
@@ -143,14 +121,89 @@ function generateAllCountries() {
                 <p class="population" >Population: <span>${populationTotal}</span></p>
                 <p class="languages">Languages:
                 `;
-          for (const lang of Object.entries(country.languages)) {
-            divHtml += `<span> ${lang[1]} </span>`;
+          for (const lang of languages) {
+            divHtml += `<span> ${lang} </span>`;
           }
           divHtml += `</p>
         <img class="more"src="images/more.svg" alt="no more pic">
-        </div>      
+        </div>
         `;
           containerCountries.innerHTML += divHtml;
+        }
+        if (search === "search") {
+          const countries = document.getElementsByClassName("country");
+          let arrayMatching = [];
+
+          if (!findMatchingSearchParameters()) {
+            generateWarning();
+          }
+          function findMatchingSearchParameters() {
+            for (const country of countries) {
+              let passesCriteria = 0;
+              for (let [key, value] of parameters.entries()) {
+                if (key === "name") {
+                  let nameText = country.dataset.name.toLowerCase();
+                  value = value.toLowerCase();
+                  if (nameText.startsWith(value.toLowerCase())) {
+                    passesCriteria++;
+                  } else {
+                    country.classList.add("notMatchesName");
+                  }
+                }
+                if (key === "continent") {
+                  let continentText = country.dataset.continent.toLowerCase();
+                  value = value.toLowerCase();
+                  if (continentText.startsWith(value.toLowerCase())) {
+                    passesCriteria++;
+                  } else {
+                    country.classList.add("notMatchesName");
+                  }
+                }
+                if (key === "language") {
+                  let languageText = country.dataset.languages
+                    .toLowerCase()
+                    .split(",");
+                  value = value.toLowerCase();
+
+                  for (let i = 0; i < languageText.length; i++) {
+                    if (languageText[i].startsWith(value.toLowerCase())) {
+                      passesCriteria++;
+                      break;
+                    } else {
+                      country.classList.add("notMatchesName");
+                    }
+                  }
+                }
+                if (key === "min") {
+                  let population = Number.parseInt(country.dataset.population);
+                  value = Number.parseInt(value);
+                  if (value <= population) {
+                    passesCriteria++;
+                  } else {
+                    country.classList.add("notMatchesName");
+                  }
+                }
+                if (key === "max") {
+                  let population = Number.parseInt(country.dataset.population);
+                  value = Number.parseInt(value);
+                  if (population <= value) {
+                    passesCriteria++;
+                  } else {
+                    country.classList.add("notMatchesName");
+                  }
+                }
+                if (passesCriteria === parameters.size) {
+                  arrayMatching.push(country);
+                  country.classList.remove("notMatchesName");
+                }
+              }
+            }
+            if (!arrayMatching.length) return false;
+            else {
+              createTotalInfo(arrayMatching);
+              return true;
+            }
+          }
         }
       }
       appendCountriesHtml();
@@ -169,9 +222,9 @@ function generateAllCountries() {
           });
         }
       }
-
       addListenersForImages();
-
+    }
+    function createMechanism() {
       let filter = document.getElementById("filters");
       let filtersDiv = filter.nextElementSibling;
 
@@ -366,121 +419,7 @@ function generateAllCountries() {
             generateWarning();
           } else {
             filter.click();
-            if (
-              !logo.classList.contains("logoStat") &&
-              !document.getElementById("statistics")
-            ) {
-              createStatsAndListeners();
-            } else {
-              addClassesLogo();
-              logo.addEventListener("click", toggleStats);
-            }
-
-            function createStatsAndListeners() {
-              createStats();
-              addClassesLogo();
-              logo.addEventListener("click", toggleStats);
-            }
-            function addClassesLogo() {
-              logo.classList.remove("logoStatNone");
-              logo.classList.add("logoStat");
-              setTimeout(() => {
-                logo.classList.add("wiggle");
-              }, 500);
-            }
-            function createStats() {
-              let htmlText = ` <div id="statistics" class="moveDefault">
-              <div class="scaleMe"></div>
-              <div id="statsInfo">
-                <h2>Matching criteria</h2>
-                <p class="stat">Total countries: <span id="totalCountries"></span></p>
-                <p class="stat">Total population: <span id="totalP"></span></p>
-                <ul>
-                    <p class="stat">Total languages: <span id="totalLanguagesSpoken"></span></p>
-                    <ul id="langsStat">
-                    </ul>
-                </ul>
-                             <!-- <ul>
-                    <p>Driving side</p>
-                    <li>
-                        <p class="stat">Left:<span id="totalDriveL"></span></p>
-                    </li>
-                    <li>
-                        <p class="stat">Right:<span id="totalDriveR"></span></p>
-                    </li>
-                </ul>
-                <ul>
-                    <p>In UN:</p>
-                    <li>
-                        <p class="stat">YES:<span id="totalUnY"></span></p>
-                    </li>
-                    <li>
-                        <p class="stat">NO:<span id="totalUnN"></span></p>
-                    </li>
-                </ul> -->
-              </div>
-              </div>`;
-              allCountriesMainContainer.insertAdjacentHTML(
-                "beforebegin",
-                htmlText
-              );
-            }
-            if (document.getElementById("warning")) {
-              warning.classList.add("hidden");
-            }
-
-            let totalCountriesSpan = document.getElementById("totalCountries");
-            let totalPopSpan = document.getElementById("totalP");
-            let totalLangSpan = document.getElementById("totalLanguagesSpoken");
-
-            setValues();
-            showStats();
-            function setValues() {
-              totalCountriesSpan.textContent = arrayMatching.length;
-              setPopulationTC();
-              setLangTC();
-              function setLangTC() {
-                //da nemam ugnjezdjene nizove
-                let langs = arrayMatching.flatMap((e) => {
-                  let langs = Array.from(e.querySelectorAll(".languages span"));
-                  let values = langs.map((e) => e.textContent);
-                  return values;
-                });
-                langs = new Set(langs);
-                totalLangSpan.textContent = langs.size;
-              }
-              function setPopulationTC() {
-                let populations = arrayMatching.map((e) =>
-                  Number.parseInt(e.dataset.population)
-                );
-                let populationTotal = populations.reduce(
-                  (prev, curr) => prev + curr
-                );
-                formatPopulation();
-                function formatPopulation() {
-                  if (populationTotal >= 1000 && populationTotal <= 999999) {
-                    populationTotal =
-                      Number.parseFloat(populationTotal / 1000).toFixed(2) +
-                      "K";
-                  }
-                  if (
-                    populationTotal >= 1000000 &&
-                    populationTotal < 1000000000
-                  ) {
-                    populationTotal =
-                      Number.parseFloat(populationTotal / 1000000).toFixed(2) +
-                      "M";
-                  }
-                  if (populationTotal >= 1000000000) {
-                    populationTotal =
-                      Number.parseFloat(populationTotal / 1000000000).toFixed(
-                        2
-                      ) + "B";
-                  }
-                  totalPopSpan.textContent = populationTotal;
-                }
-              }
-            }
+            createTotalInfo(arrayMatching);
           }
         } else {
           toogleErrorClassOn();
@@ -602,8 +541,8 @@ function generateAllCountries() {
             }
             html += `
             </p>
-            </div>    
-            <img class="back" src="images/back.svg" alt="no back pic">  
+            </div>
+            <img class="back" src="images/back.svg" alt="no back pic">
             `;
 
             main.insertAdjacentHTML("beforeend", html);
@@ -761,6 +700,94 @@ function generateAllCountries() {
       }
     }
 
+    function createTotalInfo(arrayMatching) {
+      if (
+        !logo.classList.contains("logoStat") &&
+        !document.getElementById("statistics")
+      ) {
+        createStatsAndListeners();
+      } else {
+        addClassesLogo();
+        logo.addEventListener("click", toggleStats);
+      }
+
+      function createStatsAndListeners() {
+        createStats();
+        addClassesLogo();
+        logo.addEventListener("click", toggleStats);
+      }
+      function addClassesLogo() {
+        logo.classList.remove("logoStatNone");
+        logo.classList.add("logoStat");
+        setTimeout(() => {
+          logo.classList.add("wiggle");
+        }, 500);
+      }
+      function createStats() {
+        let htmlText = ` <div id="statistics" class="moveDefault">
+        <div class="scaleMe"></div>
+        <div id="statsInfo">
+          <h2>Matching criteria</h2>
+          <p class="stat">Total countries: <span id="totalCountries"></span></p>
+          <p class="stat">Total population: <span id="totalP"></span></p>
+          <ul>
+              <p class="stat">Total languages: <span id="totalLanguagesSpoken"></span></p>
+              <ul id="langsStat">
+              </ul>
+          </ul>
+        </div>
+        </div>`;
+        allCountriesMainContainer.insertAdjacentHTML("beforebegin", htmlText);
+      }
+      if (document.getElementById("warning")) {
+        warning.classList.add("hidden");
+      }
+
+      let totalCountriesSpan = document.getElementById("totalCountries");
+      let totalPopSpan = document.getElementById("totalP");
+      let totalLangSpan = document.getElementById("totalLanguagesSpoken");
+
+      setValues();
+      showStats();
+      function setValues() {
+        totalCountriesSpan.textContent = arrayMatching.length;
+        setPopulationTC(arrayMatching);
+        setLangTC(arrayMatching);
+        function setLangTC(arrayMatching) {
+          //da nemam ugnjezdjene nizove
+          let langs = arrayMatching.flatMap((e) => {
+            let langs = Array.from(e.querySelectorAll(".languages span"));
+            let values = langs.map((e) => e.textContent);
+            return values;
+          });
+          langs = new Set(langs);
+          totalLangSpan.textContent = langs.size;
+        }
+        function setPopulationTC(arrayMatching) {
+          let populations = arrayMatching.map((e) =>
+            Number.parseInt(e.dataset.population)
+          );
+          let populationTotal = populations.reduce((prev, curr) => prev + curr);
+          formatPopulation();
+          function formatPopulation() {
+            if (populationTotal >= 1000 && populationTotal <= 999999) {
+              populationTotal =
+                Number.parseFloat(populationTotal / 1000).toFixed(2) + "K";
+            }
+            if (populationTotal >= 1000000 && populationTotal < 1000000000) {
+              populationTotal =
+                Number.parseFloat(populationTotal / 1000000).toFixed(2) + "M";
+            }
+            if (populationTotal >= 1000000000) {
+              populationTotal =
+                Number.parseFloat(populationTotal / 1000000000).toFixed(2) +
+                "B";
+            }
+            totalPopSpan.textContent = populationTotal;
+          }
+        }
+      }
+    }
     function toggleStats() {
       let statistics = document.getElementById("statistics");
       statistics.classList.toggle("moveOutOfSight");
@@ -801,5 +828,3 @@ function generateAllCountries() {
     return;
   }
 }
-
-buttonAllCountries.addEventListener("click", generateAllCountries);

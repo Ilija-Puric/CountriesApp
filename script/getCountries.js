@@ -1,5 +1,34 @@
 //Da ne moze da se pokrene dokle god nisu ucitani podaci iz fetcha
 document.getElementById("buttonAllCountries").disabled = true;
+const main = document.getElementsByTagName("main")[0];
+const mainContent = document.getElementById("mainContent");
+const buttonAllCountries = document.getElementById("buttonAllCountries");
+const logo = document.getElementById("logo");
+
+let query = location.search;
+let parameters = new Map();
+
+function searchCountries(query) {
+  if (query) {
+    let pairs = new URLSearchParams(query);
+    if (pairs.has("name") && pairs.get("name")) {
+      parameters.set("name", pairs.get("name"));
+    }
+    if (pairs.has("continent") && pairs.get("continent")) {
+      parameters.set("continent", pairs.get("continent"));
+    }
+    if (pairs.has("language") && pairs.get("language")) {
+      parameters.set("language", pairs.get("language"));
+    }
+    if (pairs.has("min") && pairs.get("min")) {
+      parameters.set("min", pairs.get("min"));
+    }
+    if (pairs.has("max") && pairs.get("max")) {
+      parameters.set("max", pairs.get("max"));
+    }
+  }
+  return parameters;
+}
 
 let allCountries = [];
 const getCountries = async function () {
@@ -45,7 +74,8 @@ const getCountries = async function () {
         allCountries.push(countryObj);
         localStorage.setItem(`${index}`, JSON.stringify(countryObj));
       }
-      document.getElementById("buttonAllCountries").disabled = false;
+      if (document.getElementById("buttonAllCountries"))
+        document.getElementById("buttonAllCountries").disabled = false;
       return;
     }
   } else {
@@ -59,5 +89,13 @@ if (localStorage.getItem(0) && localStorage.getItem(249)) {
     allCountries.push(JSON.parse(localStorage.getItem(i)));
     i++;
   }
-  document.getElementById("buttonAllCountries").disabled = false;
+  if (query === "")
+    document.getElementById("buttonAllCountries").disabled = false;
 } else getCountries();
+
+if (searchCountries(query).size) {
+  document.getElementById("mainContent").remove();
+  window.addEventListener("load", function () {
+    generateAllCountries("search");
+  });
+}
