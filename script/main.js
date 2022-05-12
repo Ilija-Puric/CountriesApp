@@ -697,6 +697,16 @@ function generateAllCountries(search) {
         function isNumeric(value) {
           return /^-?\d+$/.test(value);
         }
+
+        if (
+          name.value === "" &&
+          populationMinTag.value === "" &&
+          populationMaxTag.value === "" &&
+          continentSelectTag.value === "Choose".toLowerCase() &&
+          languageSelectTag.value === "Choose".toLowerCase()
+        ) {
+          return false;
+        }
         if (
           name.value !== "" ||
           populationMinTag.value !== "" ||
