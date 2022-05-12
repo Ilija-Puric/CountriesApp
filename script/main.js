@@ -531,7 +531,7 @@ function generateAllCountries() {
       sortSelectTag.style.display = "none";
       sortBy.addEventListener("click", () => {
         styleAdd(sortSelectTag);
-        sortWrapper.classList.toggle("glassEffect");
+        sortBy.nextElementSibling.classList.toggle("glassEffect");
       });
 
       createListenersForMore();
