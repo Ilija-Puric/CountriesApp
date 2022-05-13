@@ -458,7 +458,6 @@ function generateAllCountries(search) {
       ];
 
       let filtersWrapper = document.getElementById("wrapperFilters");
-      let sortWrapper = document.getElementById("wrapperSort");
       //First load
       filters.forEach((element) => {
         element.style.display = "none";

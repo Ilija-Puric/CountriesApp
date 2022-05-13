@@ -35,7 +35,6 @@ main {
   display: flex;
   align-items: center;
   flex-direction: column;
-  // background-color: var(--lightGreen);
   gap: 20px;
   transition: border-radius 1s ease-in-out;
 }
@@ -86,7 +85,6 @@ main {
   border: 8px dotted var(--white);
   animation: spin 3s linear;
   animation-iteration-count: infinite;
-  // animation-direction: alternate;
   position: absolute;
   top: 50%;
 }
